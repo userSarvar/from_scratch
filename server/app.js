@@ -1,67 +1,55 @@
+// server/app.js
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
 
-// Middleware to parse form data
-app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Serve static files from the 'pages' directory
-app.use(express.static(path.join(__dirname, 'pages')));
-
-// Connect to MongoDB Atlas
+// Connect to MongoDB
 mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/yourDatabaseName', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
-    console.log('Connected to MongoDB Atlas');
+    console.log('Connected to MongoDB');
 }).catch((error) => {
-    console.error('Error connecting to MongoDB Atlas', error);
+    console.error('MongoDB connection error:', error);
 });
 
-// Define a schema and model for promoter data
-const promoterSchema = new mongoose.Schema({
-    shortText: String,
-    longText: String,
-});
-
-const PromoterData = mongoose.model('PromoterData', promoterSchema);
-
-// Route to handle form submissions
-app.post('/submit-promoter', async (req, res) => {
-    const { shortText, longText } = req.body;
-
-    const newEntry = new PromoterData({
-        shortText,
-        longText,
-    });
-
-    try {
-        await newEntry.save();
-        res.send('Data submitted successfully!');
-    } catch (error) {
-        console.error('Error saving data:', error);
-        res.status(500).send('Failed to save data.');
-    }
-});
-
-
-// Serve the index page at the root URL
+// Define a simple route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Serve the promoter page at '/promoter'
-app.get('/promoter', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pages', 'promoter.html'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 
 
-// Set the port for the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+
+
+
+
+
+
+
+
+// server/app.js
+
+// Assuming you have `DataModel` from database.js
+const DataModel = require('./database');
+
+app.get('/api/data', async (req, res) => {
+    const data = await DataModel.find();
+    res.json(data);
+});
+
+app.post('/api/data', async (req, res) => {
+    const newData = new DataModel(req.body);
+    await newData.save();
+    res.status(201).send('Data created');
 });
