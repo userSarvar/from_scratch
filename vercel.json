@@ -1,9 +1,10 @@
+
 {
     "builds": [
-    { "src": "package.json", "use": "@vercel/node", "config": { "pnpmArgs": "--no-frozen-lockfile" } }
-  ],
+      { "src": "server/app.js", "use": "@vercel/node" }
+    ],
     "routes": [
-      { "src": "/(.*)", "dest": "/$1" }
+      { "src": "/(.*)", "dest": "/server/app.js" }
     ]
   }
-  
+   
