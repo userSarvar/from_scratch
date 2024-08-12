@@ -1,12 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
 
 // Middleware to parse form data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, '../public')));
