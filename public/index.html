@@ -1,499 +1,115 @@
 <!DOCTYPE html>
-<html lang="en" >
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="icon" href="img/icon.png" type="image/png"> -->
-    <title>Login - Samsung Djizzakh</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <title>Home Page</title>
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/mystyle.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-<style>
-
-/*  Sign in  start   */
-
-
-*
-{
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Quicksand', sans-serif;
-}
-body 
-{
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 100vh;
-	background: #000;
-}
-section 
-{
-	position: absolute;
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 2px;
-	flex-wrap: wrap;
-	overflow: hidden;
-}
-section::before 
-{
-	content: '';
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background: linear-gradient(#000,#0f0,#000);
-	animation: animate 5s linear infinite;
-}
-@keyframes animate 
-{
-	0%
-	{
-		transform: translateY(-100%);
-	}
-	100%
-	{
-		transform: translateY(100%);
-	}
-}
-section span 
-{
-	position: relative;
-	display: block;
-	width: calc(6.25vw - 2px);
-	height: calc(6.25vw - 2px);
-	background: #181818;
-	z-index: 2;
-	transition: 1.5s;
-}
-section span:hover 
-{
-	background: #0f0;
-	transition: 0s;
+    
+    <style>
+    .auth-buttons {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
 }
 
-section .signin
-{
-	position: absolute;
-	width: 400px;
-  background: #222;  
-	z-index: 1000;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 40px;
-	border-radius: 4px;
-	box-shadow: 0 15px 35px rgba(0,0,0,9);
+.auth-buttons a {
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 18px;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
 }
-section .signin .content 
-{
-	position: relative;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	gap: 40px;
+
+.login-btn {
+    background-color: #0381fe; /* Prominent blue color */
+    color: #fff;
 }
-section .signin .content h2 
-{
-	font-size: 2em;
-	color: #0f0;
-	text-transform: uppercase;
-}
-section .signin .content .form 
-{
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	gap: 25px;
-}
-section .signin .content .form .inputBox
-{
-	position: relative;
-	width: 100%;
-}
-section .signin .content .form .inputBox input 
-{
-	position: relative;
-	width: 100%;
-	background: #333;
-	border: none;
-	outline: none;
-	padding: 25px 10px 7.5px;
-	border-radius: 4px;
+
+
+
+.auth-buttons a:hover {
+    transform: scale(1.1); 
 	color: #fff;
-	font-weight: 500;
-	font-size: 1em;
+	text-decoration: none;
+
 }
-section .signin .content .form .inputBox i 
-{
+
+.main-bg{
+	background-color: #181818;
+}
+
+.nav{
 	position: absolute;
-	left: 0;
-	padding: 15px 10px;
-	font-style: normal;
-	color: #aaa;
-	transition: 0.5s;
-	pointer-events: none;
+	top: 0px;
+	padding-right: 20%;
+	padding-left: 10%;
 }
-.signin .content .form .inputBox input:focus ~ i,
-.signin .content .form .inputBox input:valid ~ i
-{
-	transform: translateY(-7.5px);
-	font-size: 0.8em;
-	color: #fff;
+
+.logo-djizzakh{
+	padding-bottom: -10px;
+	height: 65%;
 }
-.signin .content .form .links 
-{
-	position: relative;
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-}
-.signin .content .form .links a 
-{
-	color: #fff;
+
+.form-my{
+	padding-left: 20%;
+	padding-right: 20%;
+	
 	
 }
-.signin .content .form .links a:nth-child(2)
-{
-	color: #0f0;
-	font-weight: 600;
-}
-.signin .content .form .inputBox input[type="submit"]
-{
-	padding: 10px;
-	background: #0f0;
-	color: #000;
-	font-weight: 600;
-	font-size: 1.35em;
-	letter-spacing: 0.05em;
-	cursor: pointer;
-}
-input[type="submit"]:active
-{
-	opacity: 0.6;
-}
-@media (max-width: 900px)
-{
-	section span 
-	{
-		width: calc(10vw - 2px);
-		height: calc(10vw - 2px);
-	}
-}
-@media (max-width: 600px)
-{
-	section span 
-	{
-		width: calc(20vw - 2px);
-		height: calc(20vw - 2px);
-	}
+.form-content{
+	background-color: #f2f2f2;
+	padding-left: 5%;
+	padding-right: 5%;
+	border-radius: 30px;
 }
 
-/*  Sign in  end   */
+.sub-button{
+	background-color: #0381fe;
+	padding: 5px 70px;
+	border: 0px;
+	border-radius: 20px;
+	color: #fff;
+}
 
-
-
-
-</style>
-
-<section>
-
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-
-    <div class="signin">
-    <div class="content">
-        <h2>Sign In</h2>
-        <form id="loginForm" class="form">
-            <div class="inputBox">
-                <input type="text" id="username"  required>
-                <i>Username</i>
+.sub-button:focus,
+.sub-button:active {
+      outline: none;
+      box-shadow: none;
+}
+    
+    
+    </style>
+    
+    
+    
+    <div class="nav bg-white pt-4 pb-3">
+        <div class="container ">
+            <div class="row ">
+                <div class="col-md-4">
+                    <img src="logo.png" class="img-fluid logo-djizzakh" alt="Samsung - Djizzakh logo">
+                </div>
             </div>
-            <div class="inputBox">
-                <input type="password" id="password" required>
-                <i>Password</i>
-            </div>
-            <div class="inputBox">
-                <input type="submit"  value="Login">
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-  </section>
 
 
 
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="login.js"></script>
+    <div class="auth-buttons">
+        <a href="login.html" class="login-btn">Login</a>
+    </div>
+
+
+
+
+
 </body>
 </html>
