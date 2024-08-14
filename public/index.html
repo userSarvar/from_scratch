@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="icon.png" type="image/png">
+    <link rel="icon" href="img/icon.png" type="image/png">
     <title>Samsung Djizzakh - Asosiy sahifa</title>
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -69,6 +69,7 @@
                 padding: 3px 10px;
                 font-size: 13px;
             }
+            
         }
 
         .header1 {
@@ -113,6 +114,16 @@
             font-size: 20px;
            
         }
+        
+        @media (max-width: 768px) {
+            
+            .header1 {
+            font-size: 50px;
+            font-weight: 400;
+            }
+        }
+        
+
     </style>
 </head>
 <body class="main-bg">
@@ -121,7 +132,7 @@
         <div class="container">
             <div class="row">
                 <div class="col d-flex align-items-center">
-                    <img src="logo.png" class="img-fluid logo-djizzakh" alt="Samsung - Djizzakh logo">
+                    <img src="img/logo.png" class="img-fluid logo-djizzakh" alt="Samsung - Djizzakh logo">
                 </div>
 
                 <div class="col d-flex align-items-center justify-content-end">
@@ -155,7 +166,7 @@
 
     <div class="row">
         <div class="col p-0">
-            <img src="home-img.png" class="img-fluid home-img full-width-image" alt="">
+            <img src="img/home-img.png" class="img-fluid home-img full-width-image" alt="">
         </div>
     </div>
 
@@ -164,7 +175,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col p-0">
-                <img src="about-img.jpg" class="img-fluid full-width-image" alt="about-img">
+                <img src="img/about-img.jpg" class="img-fluid full-width-image about-img" alt="about-img">
             </div>
         </div>
     </div>
@@ -176,7 +187,140 @@
         </div>
     </div>
 
+    <div class="container">
+        <div class="flex text-center text-white   ">
+            <div class="row">
+                <div class="col">
+                    <p class="pt-5">FLEXCAM</p>
+                    <h1 class="pb-5">FlexCam va avtomatik zoom. <br> Eng zo'r tomondan tasvirga oling</h1>
+                    <video id="myVideo1" autoplay muted playsinline class="img-fluid">
+                        <source  src="img/flexcam.webm" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>                
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
+
+    <div class="container">
+        <div class="flex text-center text-white   ">
+            <div class="row">
+                <div class="col">
+                    <p class="pt-5">AYLANA CHIZIB QIDIRISH</p>
+                    <h1 class="pb-5">Katta ekranda qidirish uchun <br> uni aylanaga oling</h1>
+                    <p class=" fs-5 pb-5 mb-5">Bu smartfonda ma'lumotlarni izlash uchun samarali usul, shunchaki <br> aylana chizishingiz kifoya. Ulkan bukiluvchan ekranda barmoq yoki S Pen <br> stilusidan foydalanib, o'z samaradorligingizni oshiring.</p>
+                    <video id="myVideo2" autoplay muted playsinline class="img-fluid">
+                        <source src="img/circle.webm" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>                
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="notecontent mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <img src="img/note.jpg" class="img-fluid " alt="">
+                </div>
+                <div class="col-sm-6 text-white">
+                    <p class="pt-5 ">ESLATMA YORDAMI</p>
+                    <h1 class="pb-5">Bukiladigan Samsung smartfonlarida <br> eslatmalardan xulosa <br> olishning eng oson yo'li</h1>
+                    <p class=" fs-6 pb-5 mb-5">Ko'pvazifalilik vaqtida ham ma'ruzalaringizni bor-yo'g'I bir nechta harakat yordamida yozib oling. Eslatma Yordami funksiyasi ovozli yozuvlaringizni matnga o'zgartiradi va eslatma sifatida tartibga solib, samarali xulosalarni yaratadi. Barcha boshqasi uchun esa S Pen mavjud bo'lib, katta ekranda mo'jiza yaratishga tayyor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="translatecontent mt-5 pt-5">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-sm-6 text-white">
+                    <p class="pt-5 ">OG'ZAKI TARJIMON</p>
+                    <h1 class="pb-5">FlexWindow bilan beqiyos <br> og'zaki tarjima tajribasi</h1>
+                    <p class=" fs-6 pb-5 mb-5">Sayohat davomida mahalliy aholi bilan muloqot qilishingiz kerakmi? Siz nutq so'zlayotganingiz, xorijiy tilda xalqaro konferensiya <br> tinglayotganingiz yoki gid bilan suhbat qurayotganingizdan qat'iy nazar O'g'zaki tarjima funksiyasi barchasini shu onda tarjima qiladi.</p>
+                </div>
+
+                <div class="col-sm-6">
+                    <img src="img/translate.png" class="img-fluid " alt="">
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        
+
+
+
+        const video1 = document.getElementById('myVideo1');
+        const video2 = document.getElementById('myVideo2');
+
+        let playCount1 = 0;
+        let playCount2 = 0;
+
+        const maxPlays = 2;
+
+        video1.addEventListener('ended', () => {
+            playCount1++;
+            if (playCount1 < maxPlays) {
+                video1.play();
+            }
+        });
+
+        video2.addEventListener('ended', () => {
+            playCount2++;
+            if (playCount2 < maxPlays) {
+                video2.play();
+            }
+        });
+    </script>
+    
 
 </body>
 </html>
