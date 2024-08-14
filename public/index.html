@@ -8,10 +8,19 @@
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-</head>
-<body class="main-bg">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth; /* Enables smooth scrolling */
+        }
+
         .main-bg {
             background-color: #181818;
         }
@@ -29,104 +38,145 @@
             width: auto;
             height: 50%;
             position: relative;
-
         }
 
         .auth-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 100%;
-}
-
-.mylogin-btn {
-    text-decoration: none;
-    font-weight: bold;
-    padding: 10px 18px;
-    border-radius: 10px;
-    background-color: #0381fe;
-    color: #fff;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-
-.mylogin-btn:hover {
-    transform: scale(1.1);
-    color: #fff;
-    text-decoration: none;
-}
-@media (max-width: 768px) {
-    .mylogin-btn {
-        padding: 3px 10px;
-        font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: 100%;
         }
-    }
+
+        .mylogin-btn {
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 18px;
+            border-radius: 10px;
+            background-color: #0381fe;
+            color: #fff;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .mylogin-btn:hover {
+            transform: scale(1.1);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .mylogin-btn {
+                padding: 3px 10px;
+                font-size: 13px;
+            }
+        }
+
+        .header1 {
+            padding-top: 100px;
+            font-size: 70px;
+            font-weight: 500;
+        }
+
+        .headcontent {
+            font-size: 20px;
+            font-weight: 400;
+            padding-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .alog {
+            background-color: #0381fe;
+            padding: 15px 35px;
+        }
+
+        .about {
+            padding: 15px 35px;
+            border: 1px solid white;
+        }
+
+        .full-width-image {
+            width: 100%;
+            height: auto;
+        }
 
 
-    .header1 {
-        padding-top: 100px;
-        font-size: 70px;
-        font-weight: 500;
-    }
-
-
-    .headcontent{
-        font-size: 20px;
-        font-weight: 400;
-        padding-top: 40px;
-        padding-bottom: 80px;
-        
-
-
-    }
-
-    
+        .aboutcontent h1{
+            font-size: 50px;
+           
+        }
+        .aboutcontent p{
+            font-size: 20px;
+           
+        }
     </style>
-    
+</head>
+<body class="main-bg">
+
     <div class="nav bg-white pt-2 pb-1">
         <div class="container">
             <div class="row">
                 <div class="col d-flex align-items-center">
-                    <img  src="logo.png" class="img-fluid logo-djizzakh" alt="Samsung - Djizzakh logo">
+                    <img src="logo.png" class="img-fluid logo-djizzakh" alt="Samsung - Djizzakh logo">
                 </div>
 
-                <div class="col  d-flex align-items-center justify-content-end">
+                <div class="col d-flex align-items-center justify-content-end">
                     <div class="auth-buttons">
                         <a href="login.html" class="mylogin-btn">Login</a>
                     </div>
                 </div>
-                
             </div>
         </div>
     </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <a href=""></a>
-
-            </div>
-        </div>
-    </div>
-
-
-    
 
     <div class="home-main">
         <div class="container">
             <div class="row">
                 <div class="col text-white text-center">
-                    <h1 class="header1">Maxsus yordam va  Professional <br> rahbarlik</h1>
+                    <h1 class="header1">Maxsus yordam va Professional <br> rahbarlik</h1>
                     <p class="headcontent">Samsung Djizzax - da bizning mijozlarga xizmat ko'rsatish guruhimiz <br> sizga shaxsiy yordam va ekspert ko'rsatmalarini taqdim etishga bag'ishlangan.</p>
                 </div>
             </div>
         </div>
-        <div class="row">
+    </div>
+
+    <div class="container mb-5">
+        <div class="row text-center buttons">
             <div class="col">
-                <img src="home-img.png" class="img-fluid home-img" alt="">
+                <a href="login.html" class="alog">LOGIN</a>
+                <a href="#content-anchor" class="about ml-4">Batafsil..</a> 
             </div>
         </div>
     </div>
-    
+
+    <div class="row">
+        <div class="col p-0">
+            <img src="home-img.png" class="img-fluid home-img full-width-image" alt="">
+        </div>
+    </div>
+
+    <div id="content-anchor"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col p-0">
+                <img src="about-img.jpg" class="img-fluid full-width-image" alt="about-img">
+            </div>
+        </div>
+    </div>
+    <div class="container pb-5">
+        <div class="aboutcontent text-white text-center">
+            <h1 class="pt-5">Galaxy AI shu yerda <br> </h1>
+            <p class="pt-2">Navbatdagi muhim voqeani kutib oling. Galaxy AI sizga xizmat qilish, ijodkorligingizni namoyon etish, samaradorligingizni oshirish va yangi imkoniyatlar olamini ochish uchun yaratilgan. Sizning qo'llaringizda u barcha qurilmalarda yanada odamiy, yanada ishonchli, yanada ma'noli, yanada shaxsiy, yanada foydali va yanada xavfsiz bo'lishi kerak.
+            Hayot Galaxy AI bilan namoyon bo'ladi.</p>
+        </div>
+    </div>
+
+
+
 </body>
 </html>
