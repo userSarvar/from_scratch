@@ -15,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         role = 'retailAnalytics';
     } else if (username === 'sv' && password === 'password') {
         role = 'supervisor';
-    } else if (username === 'sa' && password === 'password') {
+    } else if (username === 'thepromoter' && password === 'mypassword123') {
         role = 'promoter';
     } else {
         alert('Invalid username or password');
