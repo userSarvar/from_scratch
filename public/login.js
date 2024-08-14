@@ -21,7 +21,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         alert('Invalid username or password');
         return;
     }
-
+    
     localStorage.setItem('role', role);
     window.location.href = 'home.html';
 });
