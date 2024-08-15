@@ -1,7 +1,7 @@
 
 {
     "builds": [
-      { "src": "server/app.js", "use": "@vercel/node" }
+      { "src": "app_promoter.js", "use": "@vercel/node" }
     ],
     "routes": [
       { "src": "/(.*)", "dest": "app_promoter.js" }
