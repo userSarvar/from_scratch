@@ -1,25 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const { zonedTimeToUtc } = require('date-fns-tz');
-
 
 const app = express();
 
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Function to get local time in Tashkent timezone
-const getLocalTime = (timezone) => {
-    const date = new Date();
-    return zonedTimeToUtc(date, timezone);
-};
-
-// MongoDB connection
+// Connect to MongoDB Atlas
 mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -29,29 +20,21 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
-// Define Schemas
+// Define schemas and models
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    createdAt: {
-        type: Date,
-        default: () => getLocalTime('Asia/Tashkent') // Tashkent timezone
-    }
 });
+
+const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
 const userSchema = new mongoose.Schema({
     login: String,
     password: String,
     name: String,
     role: String,
-    createdAt: {
-        type: Date,
-        default: () => getLocalTime('Asia/Tashkent') // Tashkent timezone
-    }
 });
 
-// Define Models
-const PromoterData = mongoose.model('PromoterData', promoterSchema);
 const UserData = mongoose.model('UserData', userSchema);
 
 // Route to handle promoter form submissions
@@ -65,9 +48,9 @@ app.post('/submit-promoter', async (req, res) => {
 
     try {
         await newEntry.save();
-        res.send('Data submitted successfully!');
+        res.send('Promoter data submitted successfully!');
     } catch (error) {
-        console.error('Error saving data:', error.stack);
+        console.error('Error saving promoter data:', error);
         res.status(500).send('Failed to save promoter data.');
     }
 });
