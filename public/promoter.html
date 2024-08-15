@@ -3,33 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="img/icon.png" type="image/png">
-    <title>Samsung Djizzakh - Promoter</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Promoter Form</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Promoter/SA Page</h2>
-        <p>Responsibilities:</p>
-        <ul>
-            <li>Enter data</li>
-            <li>Confirm identity</li>
-            <li>Data flows up to the Regional Manager/RM Supervisor/SV</li>
-        </ul>
-
-        <form action="/submit-promoter" method="POST">
-            <div class="form-group">
-                <label for="shortText">Short Text:</label>
-                <input type="text" class="form-control" id="shortText" name="shortText" required>
-            </div>
-
-            <div class="form-group">
-                <label for="longText">Long Text:</label>
-                <textarea class="form-control" id="longText" name="longText" rows="4" required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+    <h1>Promoter Form</h1>
+    <form action="/submit-promoter" method="post">
+        <input type="text" name="shortText" placeholder="Short Text" required><br>
+        <textarea name="longText" placeholder="Long Text" required></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>

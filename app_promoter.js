@@ -8,10 +8,10 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware to serve static files
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB Atlas
-mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/yourDatabaseName', {
+mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
@@ -28,7 +28,7 @@ const promoterSchema = new mongoose.Schema({
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
-// Route to handle form submissions
+// Route to handle promoter form submissions
 app.post('/submit-promoter', async (req, res) => {
     const { shortText, longText } = req.body;
 
@@ -46,29 +46,13 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
-// Define routes for static pages
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
+// Route to serve promoter.html
 app.get('/promoter', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/promoter.html'));
+    res.sendFile(path.join(__dirname, 'public/promoter.html'));
 });
 
-// Define API routes
-app.get('/api/data', async (req, res) => {
-    const data = await PromoterData.find();
-    res.json(data);
-});
-
-app.post('/api/data', async (req, res) => {
-    const newData = new PromoterData(req.body);
-    await newData.save();
-    res.status(201).send('Data created');
-});
-
-// Set the port for the server
+// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Promoter server running on port ${PORT}`);
 });

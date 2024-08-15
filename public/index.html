@@ -130,6 +130,12 @@
             border-radius: 15px;
         }
 
+
+        #myVideo3{
+            width: 65%; /* Adjust the width to 35% to make it smaller */
+            height: auto;
+        }
+
     </style>
 </head>
 <body class="main-bg">
@@ -266,13 +272,13 @@
 
 
     <div class="container">
-        <div class="flex text-center text-white   "> 
+        <div class=" text-center text-white   "> 
             <div class="row">
-                <div class="col">
+                <div class="col edit">
                     <p class="pt-5">RASM TAHRIRCHISI</p>
                     <h1 class="pb-5">AI yordamida har bir tasvirni <br> betakror sifatga keltiring</h1>
                     <p class="fs-6">Rasm Tahrirchisi funksiyasi bilan tasvirlaringizga o'zingiz istagandek ishlov bering. Sun'iy intellekt yordamida obyektlarni siljiting, masshtabni kattalashtiring, ramkalarni almashtiring va qayta yarating</p>
-                    <video id="myVideo1" autoplay muted playsinline class="img-fluid">
+                    <video id="myVideo3" autoplay muted playsinline class="img-fluid">
                         <source  src="img/galaxyaiintro_galaxy_ai_feature_full_bleed3_pc.mp4" type="video/mp4" class="img-fluid">
                         Your browser does not support the video tag.
                     </video>                
@@ -320,9 +326,13 @@
 
         const video1 = document.getElementById('myVideo1');
         const video2 = document.getElementById('myVideo2');
+        const video3 = document.getElementById('myVideo3');
+
 
         let playCount1 = 0;
         let playCount2 = 0;
+        let playCount3 = 0;
+
 
         const maxPlays = 2;
 
@@ -337,6 +347,14 @@
             playCount2++;
             if (playCount2 < maxPlays) {
                 video2.play();
+            }
+        });
+
+
+        video3.addEventListener('ended', () => {
+            playCount3++;
+            if (playCount3 < maxPlays) {
+                video3.play();
             }
         });
     </script>
