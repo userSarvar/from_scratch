@@ -1,16 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const { zonedTimeToUtc } = require('date-fns-tz');
 
 const app = express();
 
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to MongoDB Atlas
+// Function to get local time in Tashkent timezone
+const getLocalTime = (timezone) => {
+    const date = new Date();
+    return zonedTimeToUtc(date, timezone);
+};
+
+// MongoDB connection
 mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -20,17 +28,7 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
-
-
-
-const { zonedTimeToUtc } = require('date-fns-tz');
-
-// Function to get local time in Tashkent timezone
-const getLocalTime = (timezone) => {
-    const date = new Date();
-    return zonedTimeToUtc(date, timezone);
-};
-
+// Define Schemas
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
@@ -39,8 +37,6 @@ const promoterSchema = new mongoose.Schema({
         default: () => getLocalTime('Asia/Tashkent') // Tashkent timezone
     }
 });
-
-const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
 const userSchema = new mongoose.Schema({
     login: String,
@@ -53,11 +49,9 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+// Define Models
+const PromoterData = mongoose.model('PromoterData', promoterSchema);
 const UserData = mongoose.model('UserData', userSchema);
-
-
-
-
 
 // Route to handle promoter form submissions
 app.post('/submit-promoter', async (req, res) => {
@@ -73,10 +67,8 @@ app.post('/submit-promoter', async (req, res) => {
         res.send('Data submitted successfully!');
     } catch (error) {
         console.error('Error saving data:', error.stack);
-
         res.status(500).send('Failed to save promoter data.');
     }
-    
 });
 
 // Route to handle user form submissions
