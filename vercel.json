@@ -1,10 +1,10 @@
 
 {
     "builds": [
-      { "src": "app_promoter.js", "use": "@vercel/node" }
+      { "src": "app.js", "use": "@vercel/node" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "app_promoter.js" }
+      { "src": "/(.*)", "dest": "app.js" }
     ]
   }
    

@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promoter Form</title>
 </head>
 <body>
-    <h1>Promoter Form</h1>
-    <form action="/submit-promoter" method="post">
-        <input type="text" name="shortText" placeholder="Short Text" required><br>
-        <textarea name="longText" placeholder="Long Text" required></textarea><br>
-        <button type="submit">Submit</button>
+    <form action="/submit-promoter" method="POST">
+        <label for="shortText">Short Text:</label>
+        <input type="text" id="shortText" name="shortText"><br><br>
+        <label for="longText">Long Text:</label>
+        <textarea id="longText" name="longText"></textarea><br><br>
+        <input type="submit" value="Submit Promoter Data">
     </form>
 </body>
 </html>
