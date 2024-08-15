@@ -70,11 +70,13 @@ app.post('/submit-promoter', async (req, res) => {
 
     try {
         await newEntry.save();
-        res.send('Promoter data submitted successfully!');
+        res.send('Data submitted successfully!');
     } catch (error) {
-        console.error('Error saving promoter data:', error);
+        console.error('Error saving data:', error.stack);
+
         res.status(500).send('Failed to save promoter data.');
     }
+    
 });
 
 // Route to handle user form submissions
