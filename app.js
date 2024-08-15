@@ -20,10 +20,24 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
-// Define schemas and models
+
+
+
+const { zonedTimeToUtc } = require('date-fns-tz');
+
+// Function to get local time in Tashkent timezone
+const getLocalTime = (timezone) => {
+    const date = new Date();
+    return zonedTimeToUtc(date, timezone);
+};
+
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
+    createdAt: {
+        type: Date,
+        default: () => getLocalTime('Asia/Tashkent') // Tashkent timezone
+    }
 });
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
@@ -33,9 +47,17 @@ const userSchema = new mongoose.Schema({
     password: String,
     name: String,
     role: String,
+    createdAt: {
+        type: Date,
+        default: () => getLocalTime('Asia/Tashkent') // Tashkent timezone
+    }
 });
 
 const UserData = mongoose.model('UserData', userSchema);
+
+
+
+
 
 // Route to handle promoter form submissions
 app.post('/submit-promoter', async (req, res) => {
