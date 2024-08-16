@@ -23,8 +23,8 @@ html, body {
 
 .logo-djizzakh {
     padding-bottom: -10px;
-    width: auto;
-    height: 50%;
+    max-width: 50%;
+    height: auto;
     position: relative;
 }
 
@@ -123,3 +123,94 @@ html, body {
     width: 65%; /* Adjust the width to 35% to make it smaller */
     height: auto;
 }
+
+
+
+
+
+
+
+
+footer {
+    background-color: #0c0c0c;
+    color: #fff;
+    padding: 20px;
+    font-family: 'Helvetica Neue', sans-serif;
+    border-top: 1px solid #333;
+  }
+  
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .footer-column {
+    flex: 1;
+    margin: 10px;
+    min-width: 200px;
+  }
+  
+  .footer-column h3 {
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .footer-column p, .footer-column ul, .footer-column a {
+    color: #fff;
+    font-size: 14px;
+  }
+  
+  .footer-column a {
+    text-decoration: none;
+  }
+  
+  .footer-column a:hover {
+    text-decoration: underline;
+  }
+  
+  .social-media a {
+    margin: 0 5px;
+    display: inline-block;
+  }
+  
+  .social-media img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .footer-bottom p {
+    margin: 0;
+  }
+  
+  .back-to-top {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+  }
+  
+  .back-to-top:hover {
+    background-color: #444;
+    text-decoration: none;
+    color: #fff;
+
+  }
+  
+          
+          
