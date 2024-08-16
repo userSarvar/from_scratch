@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const { DateTime } = require('luxon'); // We'll use the Luxon library for timezone handling
+const moment = require('moment-timezone');
 
 const app = express();
 
@@ -25,7 +25,7 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    timestamp: Date, // Add a field to store the timestamp
+    timestamp: Date,
 });
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
@@ -43,13 +43,10 @@ const UserData = mongoose.model('UserData', userSchema);
 app.post('/submit-promoter', async (req, res) => {
     const { shortText, longText } = req.body;
 
-    // Get the current time in Tashkent timezone
-    const tashkentTime = DateTime.now().setZone('Asia/Tashkent').toJSDate();
-
     const newEntry = new PromoterData({
         shortText,
         longText,
-        timestamp: tashkentTime, // Save the current Tashkent time
+        timestamp: moment().tz('Asia/Tashkent').toDate(),
     });
 
     try {
