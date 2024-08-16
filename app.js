@@ -1,10 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 
-// Middleware to parse form data
+// Middleware to parse JSON and form data
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware to serve static files
@@ -29,13 +32,21 @@ const promoterSchema = new mongoose.Schema({
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
 const userSchema = new mongoose.Schema({
-    login: String,
+    username: String,
     password: String,
-    name: String,
     role: String,
 });
 
-const UserData = mongoose.model('UserData', userSchema);
+const User = mongoose.model('User', userSchema);
+
+// Middleware to check if request is from admin
+const adminOnly = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (authHeader !== process.env.ADMIN_SECRET) {
+        return res.sendStatus(403); // Forbidden
+    }
+    next();
+};
 
 // Route to handle promoter form submissions
 app.post('/submit-promoter', async (req, res) => {
@@ -55,23 +66,44 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
-// Route to handle user form submissions
-app.post('/submit-user', async (req, res) => {
-    const { login, password, name, role } = req.body;
+// Route to handle user registration
+app.post('/register', adminOnly, async (req, res) => {
+    const { username, password, role } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new UserData({
-        login,
-        password,
-        name,
+    const user = new User({
+        username,
+        password: hashedPassword,
         role,
     });
 
     try {
-        await newUser.save();
-        res.send('User data submitted successfully!');
+        await user.save();
+        res.status(201).send('User registered');
     } catch (error) {
-        console.error('Error saving user data:', error);
-        res.status(500).send('Failed to save user data.');
+        res.status(500).send('Error registering user');
+    }
+});
+
+// Route to handle user login
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user) {
+        return res.status(400).send('Cannot find user');
+    }
+
+    try {
+        if (await bcrypt.compare(password, user.password)) {
+            // Create JWT token for session management
+            const token = jwt.sign({ username: user.username, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.status(200).send({ message: `Welcome ${user.role}`, token });
+        } else {
+            res.status(401).send('Incorrect password');
+        }
+    } catch {
+        res.status(500).send('Error during authentication');
     }
 });
 
