@@ -17,6 +17,9 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         role = 'supervisor';
     } else if (username === 'thepromoter' && password === 'mypassword123') {
         role = 'promoter';
+    } else if (username === 'secretuser' && password === 'addnewuser') {
+        role = 'user';
+    
     } else {
         alert('Invalid username or password');
         return;

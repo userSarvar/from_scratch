@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'promoter':
                 window.location.href = 'promoter.html';
                 break;
+            
+            case 'user':
+                window.location.href = 'user.html';
+                break;
+
             default:
                 console.error('Unknown role');
         }

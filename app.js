@@ -32,8 +32,9 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    timestamp: Date,
+    timestamp: String, // Storing the timestamp as string to avoid timezone conversion issues
 });
+
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
@@ -84,6 +85,19 @@ app.post('/submit-user', async (req, res) => {
         res.status(500).send('Failed to save user data.');
     }
 });
+
+
+
+app.get('/get-promoter-data', async (req, res) => {
+    try {
+        const data = await PromoterData.find();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching promoter data:', error);
+        res.status(500).send('Failed to fetch promoter data.');
+    }
+});
+
 
 // Define routes for static pages
 app.get('/promoter', (req, res) => {

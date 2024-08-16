@@ -1,16 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Promoter Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promoter Page</title>
+    <style>
+        /* Basic styles for the buttons and sections */
+        #form-section, #data-section {
+            display: none; /* Hide sections initially */
+            margin-top: 20px;
+        }
+        button {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
-    <form action="/submit-promoter" method="POST">
-        <label for="shortText">Short Text:</label>
-        <input type="text" id="shortText" name="shortText"><br><br>
-        <label for="longText">Long Text:</label>
-        <textarea id="longText" name="longText"></textarea><br><br>
-        <input type="submit" value="Submit Promoter Data">
-    </form>
+
+    <!-- Buttons to toggle sections -->
+    <button id="add-data-btn">ADD DATA</button>
+    <button id="see-data-btn">SEE DATA</button>
+
+    <!-- Form section for adding data -->
+    <div id="form-section">
+        <form action="/submit-promoter" method="POST">
+            <label for="shortText">Short Text:</label><br>
+            <input type="text" id="shortText" name="shortText" required><br><br>
+
+            <label for="longText">Long Text:</label><br>
+            <textarea id="longText" name="longText" required></textarea><br><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Data display section -->
+    <div id="data-section">
+        <!-- Data from MongoDB will be displayed here -->
+    </div>
+
+    <!-- JavaScript to handle button clicks -->
+    <script>
+        document.getElementById('add-data-btn').addEventListener('click', function() {
+            document.getElementById('form-section').style.display = 'block';
+            document.getElementById('data-section').style.display = 'none';
+        });
+
+        document.getElementById('see-data-btn').addEventListener('click', function() {
+            document.getElementById('form-section').style.display = 'none';
+            document.getElementById('data-section').style.display = 'block';
+
+            // Fetch data from MongoDB and display
+            fetch('/get-promoter-data')
+                .then(response => response.json())
+                .then(data => {
+                    const dataSection = document.getElementById('data-section');
+                    dataSection.innerHTML = ''; // Clear previous data
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.innerHTML = `<strong>Short Text:</strong> ${item.shortText}<br><strong>Long Text:</strong> ${item.longText}`;
+                        dataSection.appendChild(div);
+                    });
+                });
+        });
+    </script>
+
 </body>
 </html>
- 
