@@ -32,9 +32,8 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    timestamp: String,
+    timestamp: Date,
 });
-
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
