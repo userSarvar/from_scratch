@@ -1,12 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const { DateTime } = require('luxon'); // We'll use the Luxon library for timezone handling
 
 const app = express();
 
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // For parsing application/json
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -25,6 +25,7 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
+    timestamp: Date, // Add a field to store the timestamp
 });
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
@@ -42,9 +43,13 @@ const UserData = mongoose.model('UserData', userSchema);
 app.post('/submit-promoter', async (req, res) => {
     const { shortText, longText } = req.body;
 
+    // Get the current time in Tashkent timezone
+    const tashkentTime = DateTime.now().setZone('Asia/Tashkent').toJSDate();
+
     const newEntry = new PromoterData({
         shortText,
         longText,
+        timestamp: tashkentTime, // Save the current Tashkent time
     });
 
     try {
@@ -73,23 +78,6 @@ app.post('/submit-user', async (req, res) => {
     } catch (error) {
         console.error('Error saving user data:', error);
         res.status(500).send('Failed to save user data.');
-    }
-});
-
-// Route to handle login requests
-app.post('/login', async (req, res) => {
-    const { login, password } = req.body;
-
-    try {
-        const user = await UserData.findOne({ login, password });
-        if (user) {
-            res.send(`Welcome, ${user.name}! You have the role of ${user.role}.`);
-        } else {
-            res.status(401).send('Invalid login or password.');
-        }
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).send('Server error during login.');
     }
 });
 
