@@ -11,6 +11,13 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    // Set the timezone to Asia/Tashkent
+    const tashkentTime = moment().tz('Asia/Tashkent').format();
+    req.tashkentTime = tashkentTime; // Making the time available in req object for routes
+    next();
+});
+
 // Connect to MongoDB Atlas
 mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh', {
     useNewUrlParser: true,
@@ -25,8 +32,9 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    timestamp: Date,
+    timestamp: String,
 });
+
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
@@ -46,7 +54,7 @@ app.post('/submit-promoter', async (req, res) => {
     const newEntry = new PromoterData({
         shortText,
         longText,
-        timestamp: moment().tz('Asia/Tashkent').toDate(),
+        timestamp: req.tashkentTime, // Using the timezone-specific time
     });
 
     try {
