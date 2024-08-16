@@ -32,7 +32,7 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    timestamp: String, // Storing the timestamp as string to avoid timezone conversion issues
+    timestamp: { type: Date, default: Date.now }, // Timestamp field
 });
 
 
@@ -54,7 +54,6 @@ app.post('/submit-promoter', async (req, res) => {
     const newEntry = new PromoterData({
         shortText,
         longText,
-        timestamp: req.tashkentTime, // Using the timezone-specific time
     });
 
     try {
