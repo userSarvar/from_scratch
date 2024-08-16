@@ -3,28 +3,21 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    let role;
-    // Example login logic (this should be replaced with actual authentication)
-    if (username === 'ceo' && password === 'password') {
-        role = 'retailCoordinator';
-    } else if (username === 'hr' && password === 'password') {
-        role = 'hr';
-    } else if (username === 'rm' && password === 'password') {
-        role = 'regionalManager';
-    } else if (username === 'ceo' && password === 'password1') {
-        role = 'retailAnalytics';
-    } else if (username === 'sv' && password === 'password') {
-        role = 'supervisor';
-    } else if (username === 'thepromoter' && password === 'mypassword123') {
-        role = 'promoter';
-    } else {
-        alert('Invalid username or password');
-        return;
-    }
-    
-    localStorage.setItem('role', role);
-    window.location.href = 'home.html';
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('role', data.role);
+            window.location.href = 'home.html';
+        } else {
+            alert('Invalid username or password');
+        }
+    })
+    .catch(error => console.error('Error:', error));
 });
-
-
-

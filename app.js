@@ -6,6 +6,7 @@ const app = express();
 
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // For parsing application/json
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -72,6 +73,23 @@ app.post('/submit-user', async (req, res) => {
     } catch (error) {
         console.error('Error saving user data:', error);
         res.status(500).send('Failed to save user data.');
+    }
+});
+
+// Route to handle login requests
+app.post('/login', async (req, res) => {
+    const { login, password } = req.body;
+
+    try {
+        const user = await UserData.findOne({ login, password });
+        if (user) {
+            res.send(`Welcome, ${user.name}! You have the role of ${user.role}.`);
+        } else {
+            res.status(401).send('Invalid login or password.');
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).send('Server error during login.');
     }
 });
 
