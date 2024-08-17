@@ -89,13 +89,30 @@ app.post('/submit-user', async (req, res) => {
 
 app.get('/get-promoter-data', async (req, res) => {
     try {
-        const data = await PromoterData.find();
+        const { date } = req.query;
+        let query = {};
+
+        if (date) {
+            const start = new Date(date);
+            const end = new Date(date);
+            end.setDate(end.getDate() + 1);
+
+            query = {
+                timestamp: {
+                    $gte: start,
+                    $lt: end,
+                },
+            };
+        }
+
+        const data = await PromoterData.find(query);
         res.json(data);
     } catch (error) {
         console.error('Error fetching promoter data:', error);
         res.status(500).send('Failed to fetch promoter data.');
     }
 });
+
 
 // Define routes for static pages
 app.get('/promoter', (req, res) => {
