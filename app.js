@@ -87,31 +87,34 @@ app.post('/submit-user', async (req, res) => {
     }
 });
 
+// Assuming you're using Express
 app.get('/get-promoter-data', async (req, res) => {
     try {
-        const { date } = req.query;
+        const dateFilter = req.query.date;
         let query = {};
 
-        if (date) {
-            const start = new Date(date);
-            const end = new Date(date);
-            end.setDate(end.getDate() + 1);
+        if (dateFilter) {
+            const startDate = new Date(dateFilter);
+            const endDate = new Date(dateFilter);
+            endDate.setDate(endDate.getDate() + 1);
 
-            query = {
-                timestamp: {
-                    $gte: start,
-                    $lt: end,
-                },
-            };
+            query = { timestamp: { $gte: startDate, $lt: endDate } };
         }
 
-        const data = await PromoterData.find(query);
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetching promoter data:', error);
-        res.status(500).send('Failed to fetch promoter data.');
+        const data = await db.collection('promoterData').find(query).toArray();
+
+        // Convert timestamps to local time zone
+        const formattedData = data.map(item => {
+            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Your_Time_Zone' });
+            return item;
+        });
+
+        res.json(formattedData);
+    } catch (err) {
+        res.status(500).send('Error retrieving data');
     }
 });
+
 
 
 // Define routes for static pages

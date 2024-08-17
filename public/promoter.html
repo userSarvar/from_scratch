@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promoter Data</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #121212;
@@ -62,6 +63,7 @@
         }
         .calendar-btn {
             margin-left: 20px;
+            margin-right: 30px;
             background-color: #1e90ff;
             border: none;
             border-radius: 5px;
@@ -96,7 +98,7 @@
         <!-- Table to display data -->
         <div id="dataTableContainer" class="container-fluid">
             <button class="calendar-btn" id="calendarBtn">
-                <i class="fa fa-calendar"></i>
+                <i class="fa fas-calendar">Filter by date</i>
             </button>
             <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
             
