@@ -5,8 +5,9 @@ const moment = require('moment-timezone');
 
 const app = express();
 
-// Middleware to parse form data
+// Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -35,7 +36,6 @@ const promoterSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }, // Timestamp field
 });
 
-
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
 const userSchema = new mongoose.Schema({
@@ -51,6 +51,8 @@ const UserData = mongoose.model('UserData', userSchema);
 app.post('/submit-promoter', async (req, res) => {
     const { shortText, longText } = req.body;
 
+    console.log(req.body);  // Debugging: Log the request body
+
     const newEntry = new PromoterData({
         shortText,
         longText,
@@ -64,7 +66,6 @@ app.post('/submit-promoter', async (req, res) => {
         res.status(500).send('Failed to save promoter data.');
     }
 });
-
 
 // Route to handle user form submissions
 app.post('/submit-user', async (req, res) => {
@@ -86,8 +87,6 @@ app.post('/submit-user', async (req, res) => {
     }
 });
 
-
-
 app.get('/get-promoter-data', async (req, res) => {
     try {
         const data = await PromoterData.find();
@@ -97,7 +96,6 @@ app.get('/get-promoter-data', async (req, res) => {
         res.status(500).send('Failed to fetch promoter data.');
     }
 });
-
 
 // Define routes for static pages
 app.get('/promoter', (req, res) => {
