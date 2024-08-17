@@ -66,7 +66,7 @@
 
     <div class="container">
         <!-- Header -->
-        <h1>Add Data to MongoDB</h1>
+        <h1 id="headerTitle">Add Data to MongoDB</h1>
         
         <!-- Buttons to toggle forms and data -->
         <button class="btn-custom" id="addDataBtn">ADD DATA</button>
@@ -87,7 +87,6 @@
 
         <!-- Table to display data -->
         <div id="dataTableContainer" class="container-fluid">
-            <h1>See Data to MongoDB</h1>
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
@@ -108,11 +107,13 @@
         document.getElementById('addDataBtn').addEventListener('click', function () {
             document.getElementById('dataForm').style.display = 'block';
             document.getElementById('dataTableContainer').style.display = 'none';
+            document.getElementById('headerTitle').innerText = 'Add Data to MongoDB';
         });
 
         document.getElementById('seeDataBtn').addEventListener('click', function () {
             document.getElementById('dataForm').style.display = 'none';
             document.getElementById('dataTableContainer').style.display = 'block';
+            document.getElementById('headerTitle').innerText = 'Get Data from MongoDB';
 
             fetch('/get-promoter-data')
                 .then(response => response.json())
