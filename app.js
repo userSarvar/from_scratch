@@ -65,6 +65,7 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
+
 // Route to handle user form submissions
 app.post('/submit-user', async (req, res) => {
     const { login, password, name, role } = req.body;
