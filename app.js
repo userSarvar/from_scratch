@@ -105,7 +105,7 @@ app.get('/get-promoter-data', async (req, res) => {
 
         // Convert timestamps to local time zone
         const formattedData = data.map(item => {
-            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Your_Time_Zone' });
+            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asis/Tashkent' });
             return item;
         });
 
