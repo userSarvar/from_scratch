@@ -11,11 +11,31 @@
             color: #ffffff;
             font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        /* Container for buttons */
-        #button-container {
+        /* Container for the main content */
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+        }
+
+        /* Header styles */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Button container styles */
+        .button-container {
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
 
@@ -40,7 +60,7 @@
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0 20px 0;
             border: 1px solid #3f51b5;
             border-radius: 5px;
@@ -49,106 +69,38 @@
             font-size: 16px;
         }
 
-        /* Table styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        /* Hide sections initially */
+        #form-section {
+            display: none;
         }
-
-        th, td {
-            border: 1px solid #3f51b5;
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #1e1e1e;
-        }
-
-        tr:nth-child(even) {
-            background-color: #2e2e2e;
-        }
-
-        /* Column for numbering rows */
-        .row-number {
-            width: 40px;
-            text-align: center;
-        }
-
-        /* Section visibility */
-        #form-section, #data-section {
-            display: none; /* Hide sections initially */
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- Container for buttons -->
-    <div id="button-container">
-        <button id="add-data-btn">ADD DATA</button>
-        <button id="see-data-btn">SEE DATA</button>
-    </div>
+    <div class="container">
+        <!-- Header -->
+        <h1>Add Data to MongoDB</h1>
 
-    <!-- Form section for adding data -->
-    <div id="form-section">
-        <form action="/submit-promoter" method="POST">
-            <label for="shortText">Short Text:</label><br>
-            <input type="text" id="shortText" name="shortText" required><br>
+        <!-- Container for buttons -->
+        <div class="button-container">
+            <button id="add-data-btn">ADD DATA</button>
+            <button id="see-data-btn">SEE DATA</button>
+        </div>
 
-            <label for="longText">Long Text:</label><br>
-            <textarea id="longText" name="longText" required></textarea><br>
-
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-
-    <!-- Data display section -->
-    <div id="data-section">
-        <table>
-            <thead>
-                <tr>
-                    <th class="row-number">#</th>
-                    <th>Short Text</th>
-                    <th>Long Text</th>
-                    <th>Timestamp</th>
-                </tr>
-            </thead>
-            <tbody id="data-body">
-                <!-- Data from MongoDB will be displayed here -->
-            </tbody>
-        </table>
+        <!-- Form section for adding data -->
+        <div id="form-section">
+            <form action="/submit-promoter" method="POST">
+                <input type="text" id="shortText" name="shortText" placeholder="Enter short text" required>
+                <textarea id="longText" name="longText" rows="4" placeholder="Enter long text" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     </div>
 
     <!-- JavaScript to handle button clicks -->
     <script>
         document.getElementById('add-data-btn').addEventListener('click', function() {
             document.getElementById('form-section').style.display = 'block';
-            document.getElementById('data-section').style.display = 'none';
-        });
-
-        document.getElementById('see-data-btn').addEventListener('click', function() {
-            document.getElementById('form-section').style.display = 'none';
-            document.getElementById('data-section').style.display = 'block';
-
-            // Fetch data from MongoDB and display
-            fetch('/get-promoter-data')
-                .then(response => response.json())
-                .then(data => {
-                    const dataBody = document.getElementById('data-body');
-                    dataBody.innerHTML = ''; // Clear previous data
-                    data.forEach((item, index) => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="row-number">${index + 1}</td>
-                            <td>${item.shortText}</td>
-                            <td>${item.longText}</td>
-                            <td>${new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' })}</td>
-                        `;
-                        dataBody.appendChild(tr);
-                    });
-                });
         });
     </script>
 
