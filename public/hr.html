@@ -8,7 +8,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Include Font Awesome for the pen icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
@@ -28,6 +27,7 @@
         .container {
             text-align: center;
         }
+
         .btn-custom {
             width: 150px;
             margin: 10px;
@@ -38,21 +38,26 @@
             border-radius: 5px;
             color: white;
         }
+
         #dataTableContainer {
             margin-top: 20px;
         }
+
         table {
             width: calc(100% - 40px);
             margin: 20px auto;
             border-collapse: collapse;
         }
+
         th, td {
             padding: 12px;
             border: 1px solid #ffffff;
         }
+
         th {
             background-color: #343a40;
         }
+
         .calendar-btn {
             margin-left: 20px;
             margin-right: 30px;
@@ -63,16 +68,11 @@
             color: white;
         }
 
-        .edit-icon {
+        .edit-btn, .save-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
             cursor: pointer;
-            color: #f0ad4e;
-            position: absolute;
-            top: 50%;
-            right: 5px;
-            transform: translateY(-50%);
-        }
-        td {
-            position: relative;
         }
     </style>
 </head>
@@ -95,7 +95,7 @@
         <!-- Table to display data -->
         <div id="dataTableContainer" class="container-fluid">
             <button class="calendar-btn btn" id="calendarBtn">
-                <i class="fa fas-calendar">Filter by date</i>
+                <i class="fa fa-calendar"></i> Filter by date
             </button>
             <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
             
@@ -118,94 +118,95 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-
-        const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
-        const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
-
-        fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('dataTableBody');
-                tableBody.innerHTML = '';
-
-                data.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td contenteditable="false">${item.shortText}</td>
-                        <td contenteditable="false">${item.longText}</td>
-                        <td contenteditable="false">${item.timestamp}</td>
-                        <td><i class="fas fa-pen edit-icon" data-id="${item._id}"></i></td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-
-                // Add event listener for Edit icons
-                document.querySelectorAll('.edit-icon').forEach(icon => {
-                    icon.addEventListener('click', function () {
-                        const row = this.closest('tr');
-                        const cells = row.querySelectorAll('td[contenteditable]');
-                        const isEditing = this.classList.contains('fa-save');
-
-                        if (isEditing) {
-                            // Save data
-                            const updatedData = {
-                                shortText: cells[0].textContent.trim(),
-                                longText: cells[1].textContent.trim(),
-                                timestamp: cells[2].textContent.trim()
-                            };
-                            const id = this.getAttribute('data-id');
-
-                            fetch(`/update-promoter-data/${id}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(updatedData)
-                            })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Failed to update data');
-                                }
-                                return response.json();
-                            })
-                            .then(result => {
-                                alert('Data updated successfully');
-                                this.classList.remove('fa-save');
-                                this.classList.add('fa-pen');
-                                cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                            })
-                            .catch(error => {
-                                alert('Data updated successfully');
-                                console.error('Error:', error);
-                            });
-                        } else {
-                            // Enable editing
-                            this.classList.remove('fa-pen');
-                            this.classList.add('fa-save');
-                            cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-                        }
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+        
+            const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
+            const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
+        
+            fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('dataTableBody');
+                    tableBody.innerHTML = '';
+        
+                    data.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td contenteditable="false">${item.shortText}</td>
+                            <td contenteditable="false">${item.longText}</td>
+                            <td contenteditable="false">${item.timestamp}</td>
+                            <td>
+                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this)">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
                     });
                 });
-            });
         });
 
+        function toggleEdit(button) {
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td[contenteditable]');
+            const isEditing = button.querySelector('i').classList.contains('fa-save');
+        
+            if (isEditing) {
+                // Save data
+                const updatedData = {
+                    shortText: cells[0].textContent.trim(),
+                    longText: cells[1].textContent.trim(),
+                    timestamp: cells[2].textContent.trim()
+                };
+                const id = button.getAttribute('data-id');
+        
+                fetch(`/update-promoter-data/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update data');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    alert('Data updated successfully');
+                    button.querySelector('i').classList.remove('fa-save');
+                    button.querySelector('i').classList.add('fa-pencil-alt');
+                    cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+                })
+                .catch(error => {
+                    alert('Data updated successfully');
+                    console.error('Error:', error);
+                });
+            } else {
+                // Enable editing
+                button.querySelector('i').classList.remove('fa-pencil-alt');
+                button.querySelector('i').classList.add('fa-save');
+                cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+            }
+        }
+    
         document.getElementById('calendarBtn').addEventListener('click', function () {
             const dateFilter = document.getElementById('dateFilter');
             dateFilter.style.display = 'inline-block';
             dateFilter.addEventListener('change', function () {
                 const selectedDate = new Date(dateFilter.value);
                 const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-
+        
                 fetch(`/get-promoter-data?date=${formattedDate}`)
                     .then(response => response.json())
                     .then(data => {
                         const tableBody = document.getElementById('dataTableBody');
                         tableBody.innerHTML = '';
-
+        
                         data.forEach((item, index) => {
                             const row = document.createElement('tr');
                             row.innerHTML = `
@@ -213,63 +214,17 @@
                                 <td contenteditable="false">${item.shortText}</td>
                                 <td contenteditable="false">${item.longText}</td>
                                 <td contenteditable="false">${item.timestamp}</td>
-                                <td><i class="fas fa-pen edit-icon" data-id="${item._id}"></i></td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this)">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
                             `;
                             tableBody.appendChild(row);
                         });
-
-                        // Add event listener for Edit icons
-                        document.querySelectorAll('.edit-icon').forEach(icon => {
-                            icon.addEventListener('click', function () {
-                                const row = this.closest('tr');
-                                const cells = row.querySelectorAll('td[contenteditable]');
-                                const isEditing = this.classList.contains('fa-save');
-
-                                if (isEditing) {
-                                    // Save data
-                                    const updatedData = {
-                                        shortText: cells[0].textContent.trim(),
-                                        longText: cells[1].textContent.trim(),
-                                        timestamp: cells[2].textContent.trim()
-                                    };
-                                    const id = this.getAttribute('data-id');
-
-                                    fetch(`/update-promoter-data/${id}`, {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify(updatedData)
-                                    })
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            throw new Error('Failed to update data');
-                                        }
-                                       
-                                        return response.json();
-})
-.then(result => {
-alert('Data updated successfully');
-this.classList.remove('fa-save');
-this.classList.add('fa-pen');
-cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-})
-.catch(error => {
-alert('Data updated successfully');
-console.error('Error:', error);
-});
-} else {
-// Enable editing
-this.classList.remove('fa-pen');
-this.classList.add('fa-save');
-cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-}
-});
-});
-});
-});
-});
-</script>
-
+                    });
+            });
+        });
+    </script>
 </body>
 </html>
