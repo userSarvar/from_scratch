@@ -176,20 +176,28 @@
         });
 
         document.getElementById('promoterForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+    e.preventDefault();
 
-            const formData = {
-                shortText: document.getElementById('shortText').value,
-                longText: document.getElementById('longText').value,
-            };
+    const formData = {
+        shortText: document.getElementById('shortText').value,
+        longText: document.getElementById('longText').value,
+    };
 
-            fetch('/submit-promoter', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            }).then(response => response.text())
-              .then(data => alert(data));
-        });
+    fetch('/submit-promoter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+    }).then(response => response.text())
+      .then(data => {
+          alert(data);
+
+          // Clear the input fields after successful submission
+          document.getElementById('shortText').value = '';
+          document.getElementById('longText').value = '';
+      })
+      .catch(error => console.error('Error:', error));
+});
+
     </script>
 
 </body>
