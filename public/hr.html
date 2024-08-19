@@ -112,6 +112,8 @@
     </div>
 
     <script>
+        
+        
         document.addEventListener('DOMContentLoaded', function () {
     const today = new Date();
     const yesterday = new Date(today);
@@ -154,6 +156,11 @@
                         };
                         const id = this.getAttribute('data-id');
 
+                        // Immediately change button text back to "Edit"
+                        this.textContent = 'Edit';
+                        cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+
+                        // Proceed to save data without waiting for the server response
                         fetch(`/update-promoter-data/${id}`, {
                             method: 'PUT',
                             headers: {
@@ -161,19 +168,8 @@
                             },
                             body: JSON.stringify(updatedData)
                         })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Failed to update data');
-                            }
-                            return response.json();
-                        })
-                        .then(result => {
-                            alert('Data updated successfully');
-                            this.textContent = 'Edit';
-                            cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                        })
                         .catch(error => {
-                            alert('Error updating data');
+                            alert('Error updating data, but button was still reset.');
                             console.error('Error:', error);
                         });
                     } else {
@@ -227,6 +223,11 @@ document.getElementById('calendarBtn').addEventListener('click', function () {
                             };
                             const id = this.getAttribute('data-id');
 
+                            // Immediately change button text back to "Edit"
+                            this.textContent = 'Edit';
+                            cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+
+                            // Proceed to save data without waiting for the server response
                             fetch(`/update-promoter-data/${id}`, {
                                 method: 'PUT',
                                 headers: {
@@ -234,19 +235,8 @@ document.getElementById('calendarBtn').addEventListener('click', function () {
                                 },
                                 body: JSON.stringify(updatedData)
                             })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Failed to update data');
-                                }
-                                return response.json();
-                            })
-                            .then(result => {
-                                alert('Data updated successfully');
-                                this.textContent = 'Edit';
-                                cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                            })
                             .catch(error => {
-                                alert('Error updating data');
+                                alert('Error updating data, but button was still reset.');
                                 console.error('Error:', error);
                             });
                         } else {
