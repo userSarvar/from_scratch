@@ -112,22 +112,93 @@
     </div>
 
     <script>
-        
-        
         document.addEventListener('DOMContentLoaded', function () {
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-    
-        const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
-        const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
-    
-        fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
+    const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('dataTableBody');
+            tableBody.innerHTML = '';
+
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td contenteditable="false">${item.shortText}</td>
+                    <td contenteditable="false">${item.longText}</td>
+                    <td contenteditable="false">${item.timestamp}</td>
+                    <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Add event listener for Edit buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const row = this.closest('tr');
+                    const cells = row.querySelectorAll('td[contenteditable]');
+                    const isEditing = this.textContent === 'Save';
+
+                    if (isEditing) {
+                        // Save data
+                        const updatedData = {
+                            shortText: cells[1].textContent.trim(),
+                            longText: cells[2].textContent.trim(),
+                            timestamp: cells[3].textContent.trim()
+                        };
+                        const id = this.getAttribute('data-id');
+
+                        fetch(`/update-promoter-data/${id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedData)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to update data');
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            alert('Data updated successfully');
+                            this.textContent = 'Edit';
+                            cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+                        })
+                        .catch(error => {
+                            alert('Error updating data');
+                            console.error('Error:', error);
+                        });
+                    } else {
+                        // Enable editing
+                        this.textContent = 'Save';
+                        cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+                    }
+                });
+            });
+        });
+});
+
+document.getElementById('calendarBtn').addEventListener('click', function () {
+    const dateFilter = document.getElementById('dateFilter');
+    dateFilter.style.display = 'inline-block';
+    dateFilter.addEventListener('change', function () {
+        const selectedDate = new Date(dateFilter.value);
+        const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
+
+        fetch(`/get-promoter-data?date=${formattedDate}`)
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.getElementById('dataTableBody');
                 tableBody.innerHTML = '';
-    
+
                 data.forEach((item, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -139,23 +210,23 @@
                     `;
                     tableBody.appendChild(row);
                 });
-    
+
                 // Add event listener for Edit buttons
                 document.querySelectorAll('.edit-btn').forEach(button => {
                     button.addEventListener('click', function () {
                         const row = this.closest('tr');
                         const cells = row.querySelectorAll('td[contenteditable]');
                         const isEditing = this.textContent === 'Save';
-    
+
                         if (isEditing) {
                             // Save data
                             const updatedData = {
-                                shortText: cells[0].textContent.trim(),
-                                longText: cells[1].textContent.trim(),
-                                timestamp: cells[2].textContent.trim()
+                                shortText: cells[1].textContent.trim(),
+                                longText: cells[2].textContent.trim(),
+                                timestamp: cells[3].textContent.trim()
                             };
                             const id = this.getAttribute('data-id');
-    
+
                             fetch(`/update-promoter-data/${id}`, {
                                 method: 'PUT',
                                 headers: {
@@ -175,7 +246,7 @@
                                 cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
                             })
                             .catch(error => {
-                                alert('Data updated successfully');
+                                alert('Error updating data');
                                 console.error('Error:', error);
                             });
                         } else {
@@ -187,81 +258,8 @@
                 });
             });
     });
-    
-    document.getElementById('calendarBtn').addEventListener('click', function () {
-        const dateFilter = document.getElementById('dateFilter');
-        dateFilter.style.display = 'inline-block';
-        dateFilter.addEventListener('change', function () {
-            const selectedDate = new Date(dateFilter.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-    
-            fetch(`/get-promoter-data?date=${formattedDate}`)
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.getElementById('dataTableBody');
-                    tableBody.innerHTML = '';
-    
-                    data.forEach((item, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td contenteditable="false">${item.shortText}</td>
-                            <td contenteditable="false">${item.longText}</td>
-                            <td contenteditable="false">${item.timestamp}</td>
-                            <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-    
-                    // Add event listener for Edit buttons
-                    document.querySelectorAll('.edit-btn').forEach(button => {
-                        button.addEventListener('click', function () {
-                            const row = this.closest('tr');
-                            const cells = row.querySelectorAll('td[contenteditable]');
-                            const isEditing = this.textContent === 'Save';
-    
-                            if (isEditing) {
-                                // Save data
-                                const updatedData = {
-                                    shortText: cells[0].textContent.trim(),
-                                    longText: cells[1].textContent.trim(),
-                                    timestamp: cells[2].textContent.trim()
-                                };
-                                const id = this.getAttribute('data-id');
-    
-                                fetch(`/update-promoter-data/${id}`, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(updatedData)
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('Failed to update data');
-                                    }
-                                    return response.json();
-                                })
-                                .then(result => {
-                                    alert('Data updated successfully');
-                                    this.textContent = 'Edit';
-                                    cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                                })
-                                .catch(error => {
-                                    alert('Error updating data');
-                                    console.error('Error:', error);
-                                });
-                            } else {
-                                // Enable editing
-                                this.textContent = 'Save';
-                                cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-                            }
-                        });
-                    });
-                });
-        });
-    });
-    
+});
+
 
     </script>
 </body>
