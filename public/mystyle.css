@@ -42,7 +42,7 @@ html, body {
     border-radius: 10px;
     background-color: #0381fe;
     color: #fff;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     cursor: pointer;
 }
 
@@ -165,20 +165,25 @@ footer {
   
   .footer-column a {
     text-decoration: none;
+    transition: font-size 0.3s ease;
   }
   
   .footer-column a:hover {
-    text-decoration: underline;
+    color: #7c7474;
+    text-decoration: none;
+    font-size: 16px;
+    
   }
   
   .social-media a {
     margin: 0 5px;
     display: inline-block;
+
   }
   
-  .social-media img {
-    width: 20px;
-    height: 20px;
+  .social-media a:hover {
+    color: #fff;
+
   }
   
   .footer-bottom {
@@ -194,7 +199,7 @@ footer {
     background-color: #333;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 18px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 18px;
