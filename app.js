@@ -115,7 +115,19 @@ app.get('/get-promoter-data', async (req, res) => {
     }
 });
 
-    
+app.get('/get-promoter-data', async (req, res) => {
+    const { start_date, end_date } = req.query;
+
+    const data = await collection.find({
+        timestamp: {
+            $gte: new Date(start_date),
+            $lte: new Date(end_date + 'T23:59:59')
+        }
+    }).toArray();
+
+    res.json(data);
+});
+
 
 // Define routes for static pages
 app.get('/promoter', (req, res) => {

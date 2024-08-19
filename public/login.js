@@ -7,7 +7,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     // Example login logic (this should be replaced with actual authentication)
     if (username === 'ceo' && password === 'password') {
         role = 'retailCoordinator';
-    } else if (username === 'hr' && password === 'password') {
+    } else if (username === 'hrpage' && password === 'password4') {
         role = 'hr';
     } else if (username === 'rm' && password === 'password') {
         role = 'regionalManager';

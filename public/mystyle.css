@@ -47,7 +47,7 @@ html, body {
 }
 
 .mylogin-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.07);
     color: #fff;
     text-decoration: none;
 }
