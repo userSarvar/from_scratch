@@ -209,46 +209,59 @@
                             tableBody.appendChild(row);
                         });
 
-                        // Add event listener for Edit buttons
-                        document.querySelectorAll('.edit-btn').forEach(button => {
-                            button.addEventListener('click', function () {
-                                const row = this.closest('tr');
-                                const cells = row.querySelectorAll('td[contenteditable]');
-                                const isEditing = this.textContent === 'Save';
+                        document.addEventListener('DOMContentLoaded', function() {
+    // Assuming you have buttons with the class 'edit-btn'
+    const editButtons = document.querySelectorAll('.edit-btn');
 
-                                if (isEditing) {
-                                    // Save data
-                                    const updatedData = {
-                                        shortText: cells[0].textContent,
-                                        longText: cells[1].textContent,
-                                        timestamp: cells[2].textContent
-                                    };
-                                    const id = this.getAttribute('data-id');
+    editButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const row = button.closest('tr'); // Assuming each button is in a row of a table
+            const shortText = row.querySelector('.short-text');
+            const longText = row.querySelector('.long-text');
 
-                                    fetch(`/update-promoter-data/${id}`, {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify(updatedData)
-                                    })
-                                    .then(response => response.json())
-                                    .then(result => {
-                                        alert('Data updated successfully');
-                                        this.textContent = 'Edit';
-                                        cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                                    })
-                                    .catch(error => {
-                                        alert('Error updating data');
-                                        console.error('Error:', error);
-                                    });
-                                } else {
-                                    // Enable editing
-                                    this.textContent = 'Save';
-                                    cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-                                }
+            if (button.innerText === 'Edit') {
+                // Enable editing
+                shortText.contentEditable = true;
+                longText.contentEditable = true;
+                button.innerText = 'Save';
+            } else if (button.innerText === 'Save') {
+                // Disable editing and save data
+                shortText.contentEditable = false;
+                longText.contentEditable = false;
+                button.innerText = 'Edit';
+
+                const id = row.dataset.id; // Assuming each row has a data-id attribute with the document id
+                const updatedData = {
+                    shortText: shortText.innerText,
+                    longText: longText.innerText,
+                    timestamp: new Date().toISOString() // Optional: Update timestamp if needed
+                };
+
+                try {
+                    const response = await fetch(`/update-promoter-data/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedData)
+                    });
+
+                    if (response.ok) {
+                        alert('Data updated successfully!');
+                    } else {
+                        const errorMsg = await response.text();
+                        console.error('Error:', errorMsg);
+                        alert('Failed to update data');
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    alert('An error occurred while updating data');
+                }
+                                    }
+                                });
                             });
                         });
+
                     });
             });
         });
