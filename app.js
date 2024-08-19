@@ -38,14 +38,7 @@ const promoterSchema = new mongoose.Schema({
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
-const userSchema = new mongoose.Schema({
-    login: String,
-    password: String,
-    name: String,
-    role: String,
-});
 
-const UserData = mongoose.model('UserData', userSchema);
 
 // Route to handle promoter form submissions
 app.post('/submit-promoter', async (req, res) => {
@@ -67,25 +60,6 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
-// Route to handle user form submissions
-app.post('/submit-user', async (req, res) => {
-    const { login, password, name, role } = req.body;
-
-    const newUser = new UserData({
-        login,
-        password,
-        name,
-        role,
-    });
-
-    try {
-        await newUser.save();
-        res.send('User data submitted successfully!');
-    } catch (error) {
-        console.error('Error saving user data:', error);
-        res.status(500).send('Failed to save user data.');
-    }
-});
 
 // Route to get promoter data with optional date filter
 app.get('/get-promoter-data', async (req, res) => {
@@ -143,9 +117,7 @@ app.get('/promoter', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/promoter.html'));
 });
 
-app.get('/user', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/user.html'));
-});
+
 
 // Set the port for the server
 const PORT = process.env.PORT || 3000;
