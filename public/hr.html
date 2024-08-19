@@ -133,9 +133,9 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${index + 1}</td>
-                            <td contenteditable="false">${item.shortText}</td>
-                            <td contenteditable="false">${item.longText}</td>
-                            <td contenteditable="false">${item.timestamp}</td>
+                            <td class="short-text" contenteditable="false">${item.shortText}</td>
+                            <td class="long-text" contenteditable="false">${item.longText}</td>
+                            <td class="timestamp" contenteditable="false">${item.timestamp}</td>
                             <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
                         `;
                         tableBody.appendChild(row);
@@ -143,41 +143,50 @@
 
                     // Add event listener for Edit buttons
                     document.querySelectorAll('.edit-btn').forEach(button => {
-                        button.addEventListener('click', function () {
+                        button.addEventListener('click', async function () {
                             const row = this.closest('tr');
-                            const cells = row.querySelectorAll('td[contenteditable]');
+                            const shortTextCell = row.querySelector('.short-text');
+                            const longTextCell = row.querySelector('.long-text');
+                            const timestampCell = row.querySelector('.timestamp');
                             const isEditing = this.textContent === 'Save';
 
                             if (isEditing) {
                                 // Save data
                                 const updatedData = {
-                                    shortText: cells[0].textContent,
-                                    longText: cells[1].textContent,
-                                    timestamp: cells[2].textContent
+                                    shortText: shortTextCell.textContent,
+                                    longText: longTextCell.textContent,
+                                    timestamp: timestampCell.textContent
                                 };
                                 const id = this.getAttribute('data-id');
 
-                                fetch(`/update-promoter-data/${id}`, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(updatedData)
-                                })
-                                .then(response => response.json())
-                                .then(result => {
-                                    alert('Data updated successfully');
-                                    this.textContent = 'Edit';
-                                    cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                                })
-                                .catch(error => {
+                                try {
+                                    const response = await fetch(`/update-promoter-data/${id}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(updatedData)
+                                    });
+
+                                    if (response.ok) {
+                                        alert('Data updated successfully');
+                                        this.textContent = 'Edit';
+                                        shortTextCell.setAttribute('contenteditable', 'false');
+                                        longTextCell.setAttribute('contenteditable', 'false');
+                                        timestampCell.setAttribute('contenteditable', 'false');
+                                    } else {
+                                        alert('Error updating data');
+                                    }
+                                } catch (error) {
                                     alert('Error updating data');
                                     console.error('Error:', error);
-                                });
+                                }
                             } else {
                                 // Enable editing
                                 this.textContent = 'Save';
-                                cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+                                shortTextCell.setAttribute('contenteditable', 'true');
+                                longTextCell.setAttribute('contenteditable', 'true');
+                                timestampCell.setAttribute('contenteditable', 'true');
                             }
                         });
                     });
@@ -201,71 +210,66 @@
                             const row = document.createElement('tr');
                             row.innerHTML = `
                                 <td>${index + 1}</td>
-                                <td contenteditable="false">${item.shortText}</td>
-                                <td contenteditable="false">${item.longText}</td>
-                                <td contenteditable="false">${item.timestamp}</td>
+                                <td class="short-text" contenteditable="false">${item.shortText}</td>
+                                <td class="long-text" contenteditable="false">${item.longText}</td>
+                                <td class="timestamp" contenteditable="false">${item.timestamp}</td>
                                 <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
                             `;
                             tableBody.appendChild(row);
                         });
 
-                        document.addEventListener('DOMContentLoaded', function() {
-    // Assuming you have buttons with the class 'edit-btn'
-    const editButtons = document.querySelectorAll('.edit-btn');
+                        // Add event listener for Edit buttons
+                        document.querySelectorAll('.edit-btn').forEach(button => {
+                            button.addEventListener('click', async function () {
+                                const row = this.closest('tr');
+                                const shortTextCell = row.querySelector('.short-text');
+                                const longTextCell = row.querySelector('.long-text');
+                                const timestampCell = row.querySelector('.timestamp');
+                                const isEditing = this.textContent === 'Save';
 
-    editButtons.forEach(button => {
-        button.addEventListener('click', async function() {
-            const row = button.closest('tr'); // Assuming each button is in a row of a table
-            const shortText = row.querySelector('.short-text');
-            const longText = row.querySelector('.long-text');
+                                if (isEditing) {
+                                    // Save data
+                                    const updatedData = {
+                                        shortText: shortTextCell.textContent,
+                                        longText: longTextCell.textContent,
+                                        timestamp: timestampCell.textContent
+                                    };
+                                    const id = this.getAttribute('data-id');
 
-            if (button.innerText === 'Edit') {
-                // Enable editing
-                shortText.contentEditable = true;
-                longText.contentEditable = true;
-                button.innerText = 'Save';
-            } else if (button.innerText === 'Save') {
-                // Disable editing and save data
-                shortText.contentEditable = false;
-                longText.contentEditable = false;
-                button.innerText = 'Edit';
+                                    try {
+                                        const response = await fetch(`/update-promoter-data/${id}`, {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(updatedData)
+                                        });
 
-                const id = row.dataset.id; // Assuming each row has a data-id attribute with the document id
-                const updatedData = {
-                    shortText: shortText.innerText,
-                    longText: longText.innerText,
-                    timestamp: new Date().toISOString() // Optional: Update timestamp if needed
-                };
-
-                try {
-                    const response = await fetch(`/update-promoter-data/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(updatedData)
-                    });
-
-                    if (response.ok) {
-                        alert('Data updated successfully!');
-                    } else {
-                        const errorMsg = await response.text();
-                        console.error('Error:', errorMsg);
-                        alert('Failed to update data');
-                    }
-                } catch (error) {
-                    console.error('Fetch error:', error);
-                    alert('An error occurred while updating data');
-                }
+                                        if (response.ok) {
+                                            alert('Data updated successfully');
+                                            this.textContent = 'Edit';
+                                            shortTextCell.setAttribute('contenteditable', 'false');
+                                            longTextCell.setAttribute('contenteditable', 'false');
+                                            timestampCell.setAttribute('contenteditable', 'false');
+                                        } else {
+                                            alert('Error updating data');
+                                        }
+                                    } catch (error) {
+                                        alert('Error updating data');
+                                        console.error('Error:', error);
                                     }
-                                });
+                                } else {
+                                    // Enable editing
+                                    this.textContent = 'Save';
+                                    shortTextCell.setAttribute('contenteditable', 'true');
+                                    longTextCell.setAttribute('contenteditable', 'true');
+                                    timestampCell.setAttribute('contenteditable', 'true');
+                                }
                             });
                         });
-
                     });
             });
         });
     </script>
-
 </body>
 </html>
