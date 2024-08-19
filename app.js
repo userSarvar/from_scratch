@@ -2,8 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const moment = require('moment-timezone');
+const router = express.Router();
+const ObjectId = require('mongodb').ObjectId;
 
 const app = express();
+
+const url = 'mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh';
+const dbName = 'SamsungDjizzakh';
+const collectionName = 'promoterdatas';
 
 // Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
@@ -67,25 +73,7 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
-// Route to handle user form submissions
-app.post('/submit-user', async (req, res) => {
-    const { login, password, name, role } = req.body;
 
-    const newUser = new UserData({
-        login,
-        password,
-        name,
-        role,
-    });
-
-    try {
-        await newUser.save();
-        res.send('User data submitted successfully!');
-    } catch (error) {
-        console.error('Error saving user data:', error);
-        res.status(500).send('Failed to save user data.');
-    }
-});
 
 app.get('/get-promoter-data', async (req, res) => {
     try {
@@ -129,14 +117,37 @@ app.get('/get-promoter-data', async (req, res) => {
 });
 
 
+router.put('/update-promoter-data/:id', (req, res) => {
+    const id = req.params.id;
+    const updatedData = {
+        shortText: req.body.shortText,
+        longText: req.body.longText,
+        timestamp: req.body.timestamp
+    };
+
+    MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
+        if (err) return res.status(500).send(err);
+
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+
+        collection.updateOne({ _id: new ObjectId(id) }, { $set: updatedData }, (err, result) => {
+            if (err) return res.status(500).send(err);
+            res.send(result);
+        });
+    });
+});
+
+module.exports = router;
+
+
+
 // Define routes for static pages
 app.get('/promoter', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/promoter.html'));
 });
 
-app.get('/user', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/user.html'));
-});
+
 
 // Set the port for the server
 const PORT = process.env.PORT || 3000;
