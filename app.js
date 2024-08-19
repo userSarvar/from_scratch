@@ -2,14 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const moment = require('moment-timezone');
-const router = express.Router();
-const ObjectId = require('mongodb').ObjectId;
 
 const app = express();
-
-const url = 'mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh';
-const dbName = 'SamsungDjizzakh';
-const collectionName = 'promoterdatas';
 
 // Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
@@ -73,8 +67,27 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
+// Route to handle user form submissions
+app.post('/submit-user', async (req, res) => {
+    const { login, password, name, role } = req.body;
 
+    const newUser = new UserData({
+        login,
+        password,
+        name,
+        role,
+    });
 
+    try {
+        await newUser.save();
+        res.send('User data submitted successfully!');
+    } catch (error) {
+        console.error('Error saving user data:', error);
+        res.status(500).send('Failed to save user data.');
+    }
+});
+
+// Route to get promoter data with optional date filter
 app.get('/get-promoter-data', async (req, res) => {
     try {
         const dateFilter = req.query.date;
@@ -103,21 +116,8 @@ app.get('/get-promoter-data', async (req, res) => {
     }
 });
 
-app.get('/get-promoter-data', async (req, res) => {
-    const { start_date, end_date } = req.query;
-
-    const data = await collection.find({
-        timestamp: {
-            $gte: new Date(start_date),
-            $lte: new Date(end_date + 'T23:59:59')
-        }
-    }).toArray();
-
-    res.json(data);
-});
-
-
-router.put('/update-promoter-data/:id', (req, res) => {
+// Route to update promoter data
+app.put('/update-promoter-data/:id', async (req, res) => {
     const id = req.params.id;
     const updatedData = {
         shortText: req.body.shortText,
@@ -125,29 +125,27 @@ router.put('/update-promoter-data/:id', (req, res) => {
         timestamp: req.body.timestamp
     };
 
-    MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
-        if (err) return res.status(500).send(err);
-
-        const db = client.db(dbName);
-        const collection = db.collection(collectionName);
-
-        collection.updateOne({ _id: new ObjectId(id) }, { $set: updatedData }, (err, result) => {
-            if (err) return res.status(500).send(err);
-            res.send(result);
-        });
-    });
+    try {
+        const result = await PromoterData.updateOne({ _id: id }, { $set: updatedData });
+        if (result.nModified === 1) {
+            res.send('Data updated successfully');
+        } else {
+            res.status(404).send('Data not found or no changes made');
+        }
+    } catch (error) {
+        console.error('Error updating promoter data:', error);
+        res.status(500).send('Failed to update promoter data');
+    }
 });
-
-module.exports = router;
-
-
 
 // Define routes for static pages
 app.get('/promoter', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/promoter.html'));
 });
 
-
+app.get('/user', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/user.html'));
+});
 
 // Set the port for the server
 const PORT = process.env.PORT || 3000;
