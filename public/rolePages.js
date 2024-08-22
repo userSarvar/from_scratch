@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (role) {
         switch (role) {
             case 'retailCoordinator':
-                window.location.href = 'retailCoordinator.html';
+                window.location.href = 'ceo.html';
                 break;
             case 'hr':
                 window.location.href = 'hr.html';

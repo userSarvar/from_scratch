@@ -5,20 +5,19 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 
     let role;
     // Example login logic (this should be replaced with actual authentication)
-    if (username === 'ceo' && password === 'password') {
+    if (username === 'ceopage' && password === 'ceoPassword2200') {
         role = 'retailCoordinator';
-    } else if (username === 'hrpage' && password === 'password4') {
+    } else if (username === 'hrpage' && password === 'hrPassword2200') {
         role = 'hr';
     } else if (username === 'rm' && password === 'password') {
         role = 'regionalManager';
-    } else if (username === 'ceo' && password === 'password1') {
+    } else if (username === 'retailpage' && password === 'retailPassword2200') {
         role = 'retailAnalytics';
-    } else if (username === 'sv' && password === 'password') {
+    } else if (username === 'sv' && password === 'svPassword2200') {
         role = 'supervisor';
-    } else if (username === 'thepromoter' && password === 'mypassword123') {
+    } else if (username === 'promoter' && password === 'promoterPassword2200') {
         role = 'promoter';
-    } else if (username === 'secretuser' && password === 'addnewuser') {
-        role = 'user';
+    
     
     } else {
         alert('Invalid username or password');
