@@ -74,7 +74,9 @@
             cursor: pointer;
         }
 
-
+        #svTable, #promoterTable {
+            display: none;
+        }
 
         @media (max-width: 768px) {
             .logo-djizzakh {
@@ -88,93 +90,117 @@
 </head>
 <body>
     <div class="container mt-5 pt-3">
-    <!-- Header -->
-    <h1 id="headerTitle">Data Management</h1>
+        <!-- Header -->
+        <h1 id="headerTitle">Data Management</h1>
 
-    <!-- Toggle Buttons -->
-    <button class="btn-custom" id="promoterToggle">Promoter Data</button>
-    <button class="btn-custom" id="svToggle">SV Data</button>
+        <!-- Toggle Buttons -->
+        <button class="btn-custom" id="promoterToggle">Promoter Data</button>
+        <button class="btn-custom" id="svToggle">SV Data</button>
 
-    <!-- Table to display data -->
-    <div id="dataTableContainer" class="container-fluid">
-        <button class="calendar-btn btn" id="calendarBtn">
-            <i class="fa fas-calendar">Filter by date</i>
-        </button>
-        <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
-        
-        <table class="table table-dark table-striped mb-5">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Short Text</th>
-                    <th>Long Text</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody id="dataTableBody">
-                <!-- Data will be dynamically inserted here -->
-            </tbody>
-        </table>
+        <!-- Table to display Promoter data -->
+        <div id="promoterTable" class="container-fluid">
+            <button class="calendar-btn btn" id="calendarBtn">
+                <i class="fa fas-calendar">Filter by date</i>
+            </button>
+            <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
+            
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Short Text</th>
+                        <th>Long Text</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="promoterTableBody">
+                    <!-- Promoter Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table to display SV data -->
+        <div id="svTable" class="container-fluid">
+            <button class="calendar-btn btn" id="calendarBtn">
+                <i class="fa fas-calendar">Filter by date</i>
+            </button>
+            <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
+            
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Short Text</th>
+                        <th>Long Text</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="svTableBody">
+                    <!-- SV Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-    
 
     <script>
-let currentDataType = 'promoter'; // Default to promoter data
+        let currentDataType = 'promoter'; // Default to promoter data
 
-document.getElementById('promoterToggle').addEventListener('click', function () {
-    currentDataType = 'promoter';
-    document.getElementById('headerTitle').innerText = 'Promoter Data';
-    fetchData();
-});
+        document.getElementById('promoterToggle').addEventListener('click', function () {
+            currentDataType = 'promoter';
+            document.getElementById('headerTitle').innerText = 'Promoter Data';
+            document.getElementById('promoterTable').style.display = 'block';
+            document.getElementById('svTable').style.display = 'none';
+            fetchData();
+        });
 
-document.getElementById('svToggle').addEventListener('click', function () {
-    currentDataType = 'sv';
-    document.getElementById('headerTitle').innerText = 'SV Data';
-    fetchData();
-});
+        document.getElementById('svToggle').addEventListener('click', function () {
+            currentDataType = 'sv';
+            document.getElementById('headerTitle').innerText = 'SV Data';
+            document.getElementById('promoterTable').style.display = 'none';
+            document.getElementById('svTable').style.display = 'block';
+            fetchData();
+        });
 
-document.getElementById('calendarBtn').addEventListener('click', function () {
-    const dateFilter = document.getElementById('dateFilter');
-    dateFilter.style.display = 'inline-block';
-    dateFilter.addEventListener('change', function () {
-        const selectedDate = new Date(dateFilter.value);
-        const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-        fetchData(formattedDate);
-    });
-});
-
-function fetchData(date = '') {
-    let url = `/get-${currentDataType}-data`;
-    if (date) {
-        url += `?date=${date}`;
-    }
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const tableBody = document.getElementById('dataTableBody');
-            tableBody.innerHTML = '';
-
-            data.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${item.username}</td>
-                    <td>${item.handle}</td>
-                    <td>${item.role}</td>
-                    <td>${item.age}</td>
-                    <td>${item.timestamp}</td>
-                `;
-                tableBody.appendChild(row);
+        document.getElementById('calendarBtn').addEventListener('click', function () {
+            const dateFilter = document.getElementById('dateFilter');
+            dateFilter.style.display = 'inline-block';
+            dateFilter.addEventListener('change', function () {
+                const selectedDate = new Date(dateFilter.value);
+                const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
+                fetchData(formattedDate);
             });
         });
-}
 
-// Automatically load promoter data on page load
-fetchData();
- </script>
+        function fetchData(date = '') {
+            let url = `/get-${currentDataType}-data`;
+            if (date) {
+                url += `?date=${date}`;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = currentDataType === 'promoter' ? 
+                        document.getElementById('promoterTableBody') : 
+                        document.getElementById('svTableBody');
+                    tableBody.innerHTML = '';
+
+                    data.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${item.shortText}</td>
+                            <td>${item.longText}</td>
+                            <td>${item.timestamp}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        }
+
+        // Automatically load promoter data on page load
+        fetchData();
+    </script>
     
 </body>
 </html>
