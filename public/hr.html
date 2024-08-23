@@ -3,160 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR Data Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" href="img/icon.png" type="image/png">
+    <title>HR Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        .logo-djizzakh {
+            padding-bottom: -10px;
+            width: 25%;
+            height: auto;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .btn-custom {
+            width: 150px;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+
+        #dataTableContainer {
+            margin-top: 20px;
+        }
+
         table {
-            width: 100%;
+            width: calc(100% - 40px);
+            margin: 20px auto;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
+
         th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
+            padding: 12px;
+            border: 1px solid #ffffff;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #343a40;
         }
-        td[contenteditable="true"] {
-            background-color: #e2e2ff;
+
+        .calendar-btn {
+            margin-left: 20px;
+            margin-right: 30px;
+            background-color: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
         }
-        .edit-btn {
+
+        .edit-btn, .save-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <h1>HR Data Management</h1>
+    <div class="nav bg-white pt-2 pb-1">
+        <div class="container">
+            <div class="row">
+                <div class="col d-flex align-items-center">
+                    <img src="img/logo.png" class="logo-djizzakh py-1" alt="Samsung - Djizzakh logo">
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Filter by Date -->
-    <input type="date" id="filterDate" />
-    <button onclick="filterData()">Filter by Date</button>
+    <div class="container mt-5 pt-3">
+        <!-- Header -->
+        <h1 id="headerTitle">HR Data</h1>
 
-    <h2>Promoter Data</h2>
-    <table id="promoterDataTable">
-        <thead>
-            <tr>
-                <th>Short Text</th>
-                <th>Long Text</th>
-                <th>Timestamp</th>
-                <th>Edit</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be populated here -->
-        </tbody>
-    </table>
+        <!-- Date Filter -->
+        <button class="calendar-btn btn" id="calendarBtn">
+            <i class="fa fa-calendar"></i> Filter by date
+        </button>
+        <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
+        
+        <!-- Promoter Data Table -->
+        <h2>Promoter Data</h2>
+        <div id="dataTableContainerPromoter" class="container-fluid">
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Short Text</th>
+                        <th>Long Text</th>
+                        <th>Time</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBodyPromoter">
+                    <!-- Promoter Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
 
-    <h2>SV Data</h2>
-    <table id="svDataTable">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Handle</th>
-                <th>Role</th>
-                <th>Age</th>
-                <th>Timestamp</th>
-                <th>Edit</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be populated here -->
-        </tbody>
-    </table>
+        <!-- SV Data Table -->
+        <h2>SV Data</h2>
+        <div id="dataTableContainerSV" class="container-fluid">
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Handle</th>
+                        <th>Role</th>
+                        <th>Age</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBodySV">
+                    <!-- SV Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchData('promoter');
-            fetchData('sv');
-        });
-
-        function fetchData(type) {
-            fetch(`/get-${type}-data`)
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+        
+            const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
+            const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
+        
+            // Fetch Promoter Data
+            fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
                 .then(response => response.json())
                 .then(data => {
-                    const tableBody = document.querySelector(`#${type}DataTable tbody`);
-                    tableBody.innerHTML = ''; // Clear any existing rows
-                    data.forEach(item => {
+                    const tableBody = document.getElementById('dataTableBodyPromoter');
+                    tableBody.innerHTML = '';
+        
+                    data.forEach((item, index) => {
                         const row = document.createElement('tr');
-                        for (const key in item) {
-                            if (key !== '_id') {
-                                const cell = document.createElement('td');
-                                cell.textContent = item[key];
-                                cell.setAttribute('data-key', key);
-                                cell.setAttribute('contenteditable', 'false');
-                                row.appendChild(cell);
-                            }
-                        }
-                        // Add edit button
-                        const editCell = document.createElement('td');
-                        const editButton = document.createElement('button');
-                        editButton.classList.add('edit-btn');
-                        editButton.innerHTML = '<i class="fas fa-pencil-alt"></i>';
-                        editButton.setAttribute('data-id', item._id);
-                        editButton.setAttribute('onclick', `toggleEdit(this, '${type}')`);
-                        editCell.appendChild(editButton);
-                        row.appendChild(editCell);
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td contenteditable="false">${item.shortText}</td>
+                            <td contenteditable="false">${item.longText}</td>
+                            <td contenteditable="false">${item.timestamp}</td>
+                            <td>
+                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'promoter')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </td>
+                        `;
                         tableBody.appendChild(row);
                     });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
+                });
+
+            // Fetch SV Data
+            fetch(`/get-sv-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('dataTableBodySV');
+                    tableBody.innerHTML = '';
+        
+                    data.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td contenteditable="false">${item.username}</td>
+                            <td contenteditable="false">${item.handle}</td>
+                            <td contenteditable="false">${item.role}</td>
+                            <td contenteditable="false">${item.age}</td>
+                            <td>
+                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+
+            // Handle Date Filter
+            const dateFilter = document.getElementById('dateFilter');
+            dateFilter.addEventListener('change', function () {
+                const selectedDate = dateFilter.value;
+                fetchDataForDate(selectedDate);
+            });
+
+            function fetchDataForDate(date) {
+                fetch(`/get-promoter-data?start_date=${date}&end_date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBodyPromoter = document.getElementById('dataTableBodyPromoter');
+                        tableBodyPromoter.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.shortText}</td>
+                                <td contenteditable="false">${item.longText}</td>
+                                <td contenteditable="false">${item.timestamp}</td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'promoter')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBodyPromoter.appendChild(row);
+                        });
+                    });
+
+                fetch(`/get-sv-data?start_date=${date}&end_date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBodySV = document.getElementById('dataTableBodySV');
+                        tableBodySV.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.username}</td>
+                                <td contenteditable="false">${item.handle}</td>
+                                <td contenteditable="false">${item.role}</td>
+                                <td contenteditable="false">${item.age}</td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBodySV.appendChild(row);
+                        });
+                    });
+            }
+        });
 
         function toggleEdit(button, type) {
-            const row = button.closest('tr');
-            const cells = row.querySelectorAll('td[contenteditable]');
-            const id = button.getAttribute('data-id');
+    const row = button.closest('tr');
+    const cells = row.querySelectorAll('td[contenteditable]');
 
-            if (button.querySelector('i').classList.contains('fa-save')) {
-                const updatedData = {};
+    // If in edit mode, save changes
+    if (button.classList.contains('save-btn')) {
+        const id = button.dataset.id;
+        const data = Array.from(cells).reduce((acc, cell, index) => {
+            if (type === 'promoter') {
+                switch (index) {
+                    case 0: acc.shortText = cell.textContent; break;
+                    case 1: acc.longText = cell.textContent; break;
+                    case 2: acc.timestamp = cell.textContent; break;
+                }
+            } else if (type === 'sv') {
+                switch (index) {
+                    case 0: acc.username = cell.textContent; break;
+                    case 1: acc.handle = cell.textContent; break;
+                    case 2: acc.role = cell.textContent; break;
+                    case 3: acc.age = cell.textContent; break;
+                }
+            }
+            return acc;
+        }, {});
 
-                cells.forEach(cell => {
-                    const key = cell.getAttribute('data-key');
-                    updatedData[key] = cell.textContent;
-                });
-
-                fetch(`/update-${type}-data/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updatedData)
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Data updated successfully');
-                        button.querySelector('i').classList.remove('fa-save');
-                        button.querySelector('i').classList.add('fa-pencil-alt');
-                        cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                    } else {
-                        throw new Error('Failed to update data');
-                    }
-                })
-                .catch(error => {
+        fetch(`/update-${type}-data/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Revert the save button back to edit mode
+                    button.classList.remove('save-btn');
+                    button.classList.add('edit-btn');
+                    button.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+                    cells.forEach(cell => cell.contentEditable = false);
+                } else {
                     alert('Error updating data');
-                    console.error(error);
-                });
-
-            } else {
-                button.querySelector('i').classList.remove('fa-pencil-alt');
-                button.querySelector('i').classList.add('fa-save');
-                cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-            }
-        }
-
-        function filterData() {
-            const filterDate = document.getElementById('filterDate').value;
-            if (filterDate) {
-                fetchData('promoter', filterDate);
-                fetchData('sv', filterDate);
-            } else {
-                fetchData('promoter');
-                fetchData('sv');
-            }
-        }
+                }
+            });
+    } else {
+        // Enable editing mode
+        button.classList.remove('edit-btn');
+        button.classList.add('save-btn');
+        button.innerHTML = '<i class="fas fa-save"></i>';
+        cells.forEach(cell => cell.contentEditable = true);
+    }
+}
     </script>
 </body>
 </html>
