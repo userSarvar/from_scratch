@@ -224,7 +224,7 @@
                     age: cells[2].textContent.trim()
                 };
                 const id = button.getAttribute('data-id');
-        
+         
                 fetch(type === 'promoter' ? `/update-promoter-data/${id}` : `/update-hr-data/${id}`, {
                     method: 'PUT',
                     headers: {
