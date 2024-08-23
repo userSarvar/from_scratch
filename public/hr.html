@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="img/icon.png" type="image/png">
-    <title>Human Resources and Promoter Data</title>
+    <title>HR Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -89,63 +89,51 @@
 
     <div class="container mt-5 pt-3">
         <!-- Header -->
-        <h1 id="headerTitle">Get Data from MongoDB</h1>
+        <h1 id="headerTitle">HR Data</h1>
 
-        <!-- Tabs for Data Types -->
-        <ul class="nav nav-tabs" id="dataTabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="promoter-tab" data-toggle="tab" href="#promoter" role="tab" aria-controls="promoter" aria-selected="true">Promoter Data</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="hr-tab" data-toggle="tab" href="#hr" role="tab" aria-controls="hr" aria-selected="false">HR Data</a>
-            </li>
-        </ul>
+        <!-- Date Filter -->
+        <button class="calendar-btn btn" id="calendarBtn">
+            <i class="fa fa-calendar"></i> Filter by date
+        </button>
+        <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
+        
+        <!-- Promoter Data Table -->
+        <h2>Promoter Data</h2>
+        <div id="dataTableContainerPromoter" class="container-fluid">
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Short Text</th>
+                        <th>Long Text</th>
+                        <th>Time</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBodyPromoter">
+                    <!-- Promoter Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
 
-        <div class="tab-content" id="myTabContent">
-            <!-- Promoter Data -->
-            <div class="tab-pane fade show active" id="promoter" role="tabpanel" aria-labelledby="promoter-tab">
-                <div id="dataTableContainerPromoter" class="container-fluid">
-                    <button class="calendar-btn btn" id="calendarBtnPromoter">
-                        <i class="fa fa-calendar"></i> Filter by date
-                    </button>
-                    <input type="date" id="dateFilterPromoter" style="display: none;" class="calendar-input">
-                    
-                    <table class="table table-dark table-striped mb-5">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Short Text</th>
-                                <th>Long Text</th>
-                                <th>Time</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataTableBodyPromoter">
-                            <!-- Promoter Data will be dynamically inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- HR Data -->
-            <div class="tab-pane fade" id="hr" role="tabpanel" aria-labelledby="hr-tab">
-                <div id="dataTableContainerHR" class="container-fluid">
-                    <table class="table table-dark table-striped mb-5">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Age</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataTableBodyHR">
-                            <!-- HR Data will be dynamically inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <!-- SV Data Table -->
+        <h2>SV Data</h2>
+        <div id="dataTableContainerSV" class="container-fluid">
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Handle</th>
+                        <th>Role</th>
+                        <th>Age</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBodySV">
+                    <!-- SV Data will be dynamically inserted here -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -182,22 +170,23 @@
                     });
                 });
 
-            // Fetch HR Data
-            fetch(`/get-hr-data`)
+            // Fetch SV Data
+            fetch(`/get-sv-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
                 .then(response => response.json())
                 .then(data => {
-                    const tableBody = document.getElementById('dataTableBodyHR');
+                    const tableBody = document.getElementById('dataTableBodySV');
                     tableBody.innerHTML = '';
         
                     data.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${index + 1}</td>
-                            <td contenteditable="false">${item.name}</td>
+                            <td contenteditable="false">${item.username}</td>
+                            <td contenteditable="false">${item.handle}</td>
                             <td contenteditable="false">${item.role}</td>
                             <td contenteditable="false">${item.age}</td>
                             <td>
-                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'hr')">
+                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
                                     <i class="fas fa-pencil-alt"></i>
                                 </button>
                             </td>
@@ -205,40 +194,87 @@
                         tableBody.appendChild(row);
                     });
                 });
+
+            // Handle Date Filter
+            const dateFilter = document.getElementById('dateFilter');
+            dateFilter.addEventListener('change', function () {
+                const selectedDate = dateFilter.value;
+                fetchDataForDate(selectedDate);
+            });
+
+            function fetchDataForDate(date) {
+                fetch(`/get-promoter-data?start_date=${date}&end_date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBodyPromoter = document.getElementById('dataTableBodyPromoter');
+                        tableBodyPromoter.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.shortText}</td>
+                                <td contenteditable="false">${item.longText}</td>
+                                <td contenteditable="false">${item.timestamp}</td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'promoter')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBodyPromoter.appendChild(row);
+                        });
+                    });
+
+                fetch(`/get-sv-data?start_date=${date}&end_date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBodySV = document.getElementById('dataTableBodySV');
+                        tableBodySV.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.username}</td>
+                                <td contenteditable="false">${item.handle}</td>
+                                <td contenteditable="false">${item.role}</td>
+                                <td contenteditable="false">${item.age}</td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBodySV.appendChild(row);
+                        });
+                    });
+            }
         });
 
         function toggleEdit(button, type) {
             const row = button.closest('tr');
             const cells = row.querySelectorAll('td[contenteditable]');
-            const isEditing = button.querySelector('i').classList.contains('fa-save');
         
-            if (isEditing) {
-                // Save data
-                const updatedData = type === 'promoter' ? {
-                    shortText: cells[0].textContent.trim(),
-                    longText: cells[1].textContent.trim(),
-                    timestamp: cells[2].textContent.trim()
-                } : {
-                    name: cells[0].textContent.trim(),
-                    role: cells[1].textContent.trim(),
-                    age: cells[2].textContent.trim()
-                };
+            if (button.querySelector('i').classList.contains('fa-save')) {
                 const id = button.getAttribute('data-id');
-         
-                fetch(type === 'promoter' ? `/update-promoter-data/${id}` : `/update-hr-data/${id}`, {
+                const updatedData = {};
+        
+                cells.forEach((cell, index) => {
+                    const key = cell.getAttribute('data-key');
+                    const value = cell.textContent;
+                    updatedData[key] = value;
+                });
+        
+                fetch(`/update-${type}-data/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(updatedData)
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to update data');
-                    }
-                    return response.json();
-                })
-                .then(result => {
+                .then(response => response.json())
+                .then(data => {
                     alert('Data updated successfully');
                     button.querySelector('i').classList.remove('fa-save');
                     button.querySelector('i').classList.add('fa-pencil-alt');
