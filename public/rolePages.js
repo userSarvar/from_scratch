@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = 'retailAnalytics.html';
                 break;
             case 'supervisor':
-                window.location.href = 'supervisor.html';
+                window.location.href = 'sv.html';
                 break;
             case 'promoter':
                 window.location.href = 'promoter.html';
