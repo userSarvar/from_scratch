@@ -149,81 +149,119 @@
     </div>
 
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
-    const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
-
-    // Fetch Promoter Data
-    fetchDataForDate(formattedYesterday, formattedToday);
-
-    // Handle Date Filter
-    const dateFilter = document.getElementById('dateFilter');
-    dateFilter.addEventListener('change', function () {
-        const selectedDate = dateFilter.value;
-        console.log('Selected Date:', selectedDate);
-        fetchDataForDate(selectedDate, selectedDate);
-    });
-
-    function fetchDataForDate(startDate, endDate) {
-        console.log('Fetching data for dates:', startDate, endDate);
-
-        fetch(`/get-promoter-data?start_date=${startDate}&end_date=${endDate}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Promoter Data:', data);
-                const tableBodyPromoter = document.getElementById('dataTableBodyPromoter');
-                tableBodyPromoter.innerHTML = '';
-
-                data.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td contenteditable="false">${item.shortText}</td>
-                        <td contenteditable="false">${item.longText}</td>
-                        <td contenteditable="false">${item.timestamp}</td>
-                        <td>
-                            <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'promoter')">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                        </td>
-                    `;
-                    tableBodyPromoter.appendChild(row);
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+        
+            const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
+            const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
+        
+            // Fetch Promoter Data
+            fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('dataTableBodyPromoter');
+                    tableBody.innerHTML = '';
+        
+                    data.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td contenteditable="false">${item.shortText}</td>
+                            <td contenteditable="false">${item.longText}</td>
+                            <td contenteditable="false">${item.timestamp}</td>
+                            <td>
+                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'promoter')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
                 });
-            })
-            .catch(error => console.error('Error fetching promoter data:', error));
 
-        fetch(`/get-sv-data?start_date=${startDate}&end_date=${endDate}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('SV Data:', data);
-                const tableBodySV = document.getElementById('dataTableBodySV');
-                tableBodySV.innerHTML = '';
-
-                data.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td contenteditable="false">${item.username}</td>
-                        <td contenteditable="false">${item.handle}</td>
-                        <td contenteditable="false">${item.role}</td>
-                        <td contenteditable="false">${item.age}</td>
-                        <td>
-                            <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                        </td>
-                    `;
-                    tableBodySV.appendChild(row);
+            // Fetch SV Data
+            fetch(`/get-sv-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('dataTableBodySV');
+                    tableBody.innerHTML = '';
+        
+                    data.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td contenteditable="false">${item.username}</td>
+                            <td contenteditable="false">${item.handle}</td>
+                            <td contenteditable="false">${item.role}</td>
+                            <td contenteditable="false">${item.age}</td>
+                            <td>
+                                <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
                 });
-            })
-            .catch(error => console.error('Error fetching SV data:', error));
-    }
-});
 
+            // Handle Date Filter
+            const dateFilter = document.getElementById('dateFilter');
+            dateFilter.addEventListener('change', function () {
+                const selectedDate = dateFilter.value;
+                fetchDataForDate(selectedDate);
+            });
+
+            function fetchDataForDate(date) {
+                fetch(`/get-promoter-data?start_date=${date}&end_date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBodyPromoter = document.getElementById('dataTableBodyPromoter');
+                        tableBodyPromoter.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.shortText}</td>
+                                <td contenteditable="false">${item.longText}</td>
+                                <td contenteditable="false">${item.timestamp}</td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'promoter')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBodyPromoter.appendChild(row);
+                        });
+                    });
+
+                fetch(`/get-sv-data?start_date=${date}&end_date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBodySV = document.getElementById('dataTableBodySV');
+                        tableBodySV.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.username}</td>
+                                <td contenteditable="false">${item.handle}</td>
+                                <td contenteditable="false">${item.role}</td>
+                                <td contenteditable="false">${item.age}</td>
+                                <td>
+                                    <button class="edit-btn" data-id="${item._id}" onclick="toggleEdit(this, 'sv')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tableBodySV.appendChild(row);
+                        });
+                    });
+            }
+        });
 
         function toggleEdit(button, type) {
     const row = button.closest('tr');

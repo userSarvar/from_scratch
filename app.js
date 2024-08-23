@@ -14,8 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
     // Set the timezone to Asia/Tashkent
-    const tashkentTime = moment().tz('Asia/Tashkent').format();
-    req.tashkentTime = tashkentTime; // Making the time available in req object for routes
+    req.tashkentTime = moment().tz('Asia/Tashkent').format();
     next();
 });
 
@@ -33,7 +32,7 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
-    timestamp: { type: Date, default: Date.now }, // Timestamp field
+    timestamp: { type: Date, default: Date.now },
 });
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
@@ -43,7 +42,7 @@ const svSchema = new mongoose.Schema({
     handle: String,
     role: String,
     age: String,
-    timestamp: { type: Date, default: Date.now }, // Timestamp field
+    timestamp: { type: Date, default: Date.now },
 });
 
 const svData = mongoose.model('svData', svSchema);
@@ -51,8 +50,6 @@ const svData = mongoose.model('svData', svSchema);
 // Route to handle promoter form submissions
 app.post('/submit-promoter', async (req, res) => {
     const { shortText, longText } = req.body;
-
-    console.log(req.body);  // Debugging: Log the request body
 
     const newEntry = new PromoterData({
         shortText,
@@ -68,53 +65,46 @@ app.post('/submit-promoter', async (req, res) => {
     }
 });
 
-
-
-// Route to handle promoter form submissions
+// Route to handle SV form submissions
 app.post('/submit-sv', async (req, res) => {
     const { username, handle, role, age } = req.body;
 
-    console.log(req.body);  // Debugging: Log the request body
-
     const newEntry = new svData({
         username,
-        handle, 
-        role, 
+        handle,
+        role,
         age,
     });
 
     try {
         await newEntry.save();
-        res.send('sv data submitted successfully!');
+        res.send('SV data submitted successfully!');
     } catch (error) {
-        console.error('Error saving promoter data:', error);
-        res.status(500).send('Failed to save promoter data.');
+        console.error('Error saving SV data:', error);
+        res.status(500).send('Failed to save SV data.');
     }
 });
-
-
 
 // Route to get promoter data with optional date filter
 app.get('/get-promoter-data', async (req, res) => {
     try {
-        const dateFilter = req.query.date;
+        const { start_date, end_date } = req.query;
         let query = {};
 
-        if (dateFilter) {
-            const startDate = new Date(dateFilter);
-            const endDate = new Date(dateFilter);
-            endDate.setDate(endDate.getDate() + 1);
+        if (start_date && end_date) {
+            const startDate = new Date(start_date);
+            const endDate = new Date(end_date);
+            endDate.setHours(23, 59, 59, 999);
 
-            query = { timestamp: { $gte: startDate, $lt: endDate } };
+            query.timestamp = { $gte: startDate, $lte: endDate };
         }
 
         const data = await PromoterData.find(query).exec();
 
-        // Convert timestamps to local time zone
-        const formattedData = data.map(item => {
-            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' });
-            return item;
-        });
+        const formattedData = data.map(item => ({
+            ...item.toObject(),
+            timestamp: moment(item.timestamp).tz('Asia/Tashkent').format('YYYY-MM-DD HH:mm:ss'),
+        }));
 
         res.json(formattedData);
     } catch (err) {
@@ -123,47 +113,41 @@ app.get('/get-promoter-data', async (req, res) => {
     }
 });
 
-
-
-
-
+// Route to get SV data with optional date filter
 app.get('/get-sv-data', async (req, res) => {
     try {
-        const dateFilter = req.query.date;
+        const { start_date, end_date } = req.query;
         let query = {};
 
-        if (dateFilter) {
-            const startDate = new Date(dateFilter);
-            const endDate = new Date(dateFilter);
-            endDate.setDate(endDate.getDate() + 1);
+        if (start_date && end_date) {
+            const startDate = new Date(start_date);
+            const endDate = new Date(end_date);
+            endDate.setHours(23, 59, 59, 999);
 
-            query = { timestamp: { $gte: startDate, $lt: endDate } };
+            query.timestamp = { $gte: startDate, $lte: endDate };
         }
 
         const data = await svData.find(query).exec();
 
-        // Convert timestamps to local time zone
-        const formattedData = data.map(item => {
-            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' });
-            return item;
-        });
+        const formattedData = data.map(item => ({
+            ...item.toObject(),
+            timestamp: moment(item.timestamp).tz('Asia/Tashkent').format('YYYY-MM-DD HH:mm:ss'),
+        }));
 
         res.json(formattedData);
     } catch (err) {
-        console.error('Error retrieving sv data:', err);
+        console.error('Error retrieving SV data:', err);
         res.status(500).send('Error retrieving data');
     }
 });
 
-
-
 // Route to update promoter data
 app.put('/update-promoter-data/:id', async (req, res) => {
-    const id = req.params.id;
+    const { id } = req.params;
     const updatedData = {
         shortText: req.body.shortText,
         longText: req.body.longText,
-        timestamp: req.body.timestamp
+        timestamp: req.body.timestamp || Date.now(),
     };
 
     try {
@@ -179,20 +163,15 @@ app.put('/update-promoter-data/:id', async (req, res) => {
     }
 });
 
-
-
-
-
-
-// Route to update sv data
+// Route to update SV data
 app.put('/update-sv-data/:id', async (req, res) => {
-    const id = req.params.id;
+    const { id } = req.params;
     const updatedData = {
         username: req.body.username,
         handle: req.body.handle,
         role: req.body.role,
         age: req.body.age,
-        timestamp: req.body.timestamp
+        timestamp: req.body.timestamp || Date.now(),
     };
 
     try {
@@ -203,27 +182,19 @@ app.put('/update-sv-data/:id', async (req, res) => {
             res.status(404).send('Data not found or no changes made');
         }
     } catch (error) {
-        console.error('Error updating promoter data:', error);
-        res.status(500).send('Failed to update promoter data');
+        console.error('Error updating SV data:', error);
+        res.status(500).send('Failed to update SV data');
     }
 });
-
-
-
 
 // Define routes for static pages
 app.get('/promoter', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/promoter.html'));
 });
 
-
-// Define routes for static pages
 app.get('/sv', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/sv.html'));
 });
-
-
-
 
 // Set the port for the server
 const PORT = process.env.PORT || 3000;
