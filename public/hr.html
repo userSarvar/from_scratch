@@ -69,6 +69,62 @@
             color: white;
             cursor: pointer;
         }
+
+
+        .button-group {
+    display: flex;
+    justify-content: space-between; /* Adjust as needed */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.button-group button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-group button:hover {
+    background-color: #0056b3;
+}
+
+.button-group button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+
+.button-group {
+    display: flex;
+    justify-content: space-between; /* Adjust as needed */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.button-group button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-group button:hover {
+    background-color: #0056b3;
+}
+
+.button-group button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+
     </style>
 </head>
 <body>
@@ -348,6 +404,10 @@
         }
     });
 
+    document.getElementById('filter-button').addEventListener('click', function() {
+    const selectedDate = document.getElementById('date-picker').value;
+    // Implement your filtering logic to update the SV table
+});
 
 
 
