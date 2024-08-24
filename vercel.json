@@ -5,6 +5,14 @@
     ],
     "routes": [
       { "src": "/(.*)", "dest": "app.js" }
+    ],
+
+
+    "rewrites": [
+      { "source": "/update-promoter-data/:id", "destination": "/api/update-promoter-data/:id" }
     ]
+
   }
-   
+  
+    
+    
