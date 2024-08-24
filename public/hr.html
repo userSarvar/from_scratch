@@ -112,7 +112,7 @@ body {
                         <th>Edit</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-white">
                     <!-- Promoter data will be inserted here -->
                 </tbody>
             </table>
@@ -132,7 +132,7 @@ body {
                         <th>Edit</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-white">
                     <!-- SV data will be inserted here -->
                 </tbody>
             </table>
@@ -186,7 +186,7 @@ body {
                         <td>${item.handle}</td>
                         <td>${item.role}</td>
                         <td>${item.age}</td>
-                        <td>{{timestamp}}</td>
+                        <td>${item.timestamp}</td>
                         <td><span class="save-icon" onclick="editRow(this)">🖉</span></td>
                     </tr>
                 `;
