@@ -6,6 +6,88 @@
     <title>HR Management</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+
+body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        .logo-djizzakh {
+    padding-bottom: -10px;
+    width: 25%;
+    height: auto;
+    position: relative;
+}
+
+        .container {
+           
+            text-align: center;
+        }
+        .btn-custom {
+            width: 150px;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+        #dataForm {
+            display: block;
+            margin-top: 20px;
+        }
+        #dataTableContainer {
+            display: none;
+            margin-top: 20px;
+        }
+        table {
+            width: calc(100% - 40px);
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ffffff;
+        }
+        th {
+            background-color: #343a40;
+        }
+       
+        label {
+            float: left;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .calendar-btn {
+            margin-left: 20px;
+            margin-right: 30px;
+            background-color: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .logo-djizzakh {
+                padding-bottom: -10px;
+                width: 50%;
+                height: auto;
+                position: relative;
+            }
+        }
+
+
+
         .save-icon {
             cursor: pointer;
         }
@@ -46,6 +128,7 @@
                         <th>Handle</th>
                         <th>Role</th>
                         <th>Age</th>
+                        <th>Timestamp</th>
                         <th>Edit</th>
                     </tr>
                 </thead>
@@ -103,6 +186,7 @@
                         <td>${item.handle}</td>
                         <td>${item.role}</td>
                         <td>${item.age}</td>
+                        <td>{{timestamp}}</td>
                         <td><span class="save-icon" onclick="editRow(this)">🖉</span></td>
                     </tr>
                 `;
