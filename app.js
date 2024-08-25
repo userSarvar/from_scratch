@@ -12,9 +12,10 @@ app.use(express.json());
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware to add Tashkent time to the request
 app.use((req, res, next) => {
     const tashkentTime = moment().tz('Asia/Tashkent').format();
-    req.tashkentTime = tashkentTime; 
+    req.tashkentTime = tashkentTime;
     next();
 });
 
@@ -37,7 +38,6 @@ const promoterSchema = new mongoose.Schema({
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
 
-// SV Schema
 const svSchema = new mongoose.Schema({
     username: String,
     handle: String,
@@ -81,10 +81,10 @@ app.get('/get-promoter-data', async (req, res) => {
 
         const data = await PromoterData.find(query).exec();
 
-        const formattedData = data.map(item => {
-            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' });
-            return item;
-        });
+        const formattedData = data.map(item => ({
+            ...item.toObject(),
+            timestamp: new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' })
+        }));
 
         res.json(formattedData);
     } catch (err) {
@@ -149,10 +149,10 @@ app.get('/get-sv-data', async (req, res) => {
 
         const data = await SVData.find(query).exec();
 
-        const formattedData = data.map(item => {
-            item.timestamp = new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' });
-            return item;
-        });
+        const formattedData = data.map(item => ({
+            ...item.toObject(),
+            timestamp: new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' })
+        }));
 
         res.json(formattedData);
     } catch (err) {
