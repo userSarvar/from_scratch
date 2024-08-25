@@ -13,57 +13,7 @@
             color: #ffffff;
             font-family: Arial, sans-serif;
         }
-
-        .logo-djizzakh {
-            width: 25%;
-            height: auto;
-        }
-
-        .container {
-            text-align: center;
-        }
-
-        .btn-custom, .calendar-btn {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #1e90ff;
-            border: none;
-            border-radius: 5px;
-            color: white;
-        }
-
-        .btn-custom:hover, .calendar-btn:hover {
-            background-color: #0056b3;
-        }
-
-        #dataTableContainer {
-            margin-top: 20px;
-        }
-
-        table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #ffffff;
-        }
-
-        th {
-            background-color: #343a40;
-        }
-
-        .edit-btn {
-            background-color: #f0ad4e;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            color: white;
-            cursor: pointer;
-        }
+        /* Add your CSS styling here */
     </style>
 </head>
 <body>
@@ -143,8 +93,8 @@
             fetchPromoterData(formattedYesterday, formattedToday);
 
             // Fetch and display SV data when switching to SV table
-            function fetchSvData() {
-                fetch(`/get-sv-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
+            function fetchSvData(start_date, end_date) {
+                fetch(`/get-sv-data?start_date=${start_date}&end_date=${end_date}`)
                     .then(response => response.json())
                     .then(data => renderTableData('svTableBody', data, true))
                     .catch(err => console.error('Error fetching SV data:', err));
@@ -162,7 +112,7 @@
                 toggleButton.textContent = isPromoterVisible ? 'Switch to Promoter Data' : 'Switch to SV Data';
 
                 if (!isPromoterVisible) {
-                    fetchSvData();
+                    fetchSvData(formattedYesterday, formattedToday);
                 }
             });
 
@@ -231,33 +181,24 @@
                                 updatedData.role = cells[2].textContent.trim();
                                 updatedData.age = cells[3].textContent.trim();
                             }
-                            const id = this.getAttribute('data-id');
 
-                            fetch(`/update-promoter-data/${id}`, {
-                                method: 'PUT',
+                            fetch(`/update-data/${this.dataset.id}`, {
+                                method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify(updatedData)
                             })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Failed to update data');
-                                }
-                                return response.json();
-                            })
-                            .then(result => {
-                                alert('Data updated successfully');
-                                this.textContent = 'Edit';
-                                cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-                            })
-                            .catch(error => {
-                                alert('Error updating data: ' + error.message);
-                            });
+                                .then(response => response.json())
+                                .then(() => {
+                                    this.textContent = 'Edit';
+                                    cells.forEach(cell => cell.contentEditable = false);
+                                })
+                                .catch(err => console.error('Error updating data:', err));
                         } else {
-                            // Switch to edit mode
+                            // Enter edit mode
                             this.textContent = 'Save';
-                            cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+                            cells.forEach(cell => cell.contentEditable = true);
                         }
                     });
                 });
