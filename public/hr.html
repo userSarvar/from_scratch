@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="img/icon.png" type="image/png">
-    <title>Data Management</title>
+    <title>HR Data Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
-
     <style>
         body {
             background-color: #121212;
@@ -16,7 +14,6 @@
         }
 
         .logo-djizzakh {
-            padding-bottom: -10px;
             width: 25%;
             height: auto;
             position: relative;
@@ -75,11 +72,11 @@
             cursor: pointer;
         }
 
-        .save-btn {
-            background-color: #28a745;
+        .toggle-btn {
+            background-color: #6c757d;
             border: none;
             border-radius: 5px;
-            padding: 5px 10px;
+            padding: 10px 20px;
             color: white;
             cursor: pointer;
         }
@@ -98,50 +95,24 @@
     </div>
 
     <div class="container mt-5 pt-3">
-        <!-- Header -->
-        <h1 id="headerTitle">Manage Data</h1>
+        <h1 id="headerTitle">HR Data Management</h1>
 
-        <!-- Toggle Button for Tables -->
-        <div class="text-center">
-            <button class="btn btn-custom" id="toggleTableBtn">Switch to SV Data</button>
-        </div>
+        <button id="toggleTableBtn" class="toggle-btn mb-4">Show SV Data</button>
 
-        <!-- Table to display data -->
         <div id="dataTableContainer" class="container-fluid">
             <button class="calendar-btn btn" id="calendarBtn">
                 <i class="fa fas-calendar">Filter by date</i>
             </button>
-            <input type="date" id="dateFilter" class="calendar-input">
-
-            <table class="table table-dark table-striped mb-5" id="promoterTable">
+            <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
+            
+            <table class="table table-dark table-striped mb-5">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Short Text</th>
-                        <th>Long Text</th>
-                        <th>Time</th>
-                        <th>Edit</th>
+                    <tr id="tableHeader">
+                        <!-- Headers will be dynamically inserted -->
                     </tr>
                 </thead>
-                <tbody id="promoterTableBody">
-                    <!-- Promoter Data will be dynamically inserted here -->
-                </tbody>
-            </table>
-
-            <table class="table table-dark table-striped mb-5" id="svTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Username</th>
-                        <th>Handle</th>
-                        <th>Role</th>
-                        <th>Age</th>
-                        <th>Time</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody id="svTableBody">
-                    <!-- SV Data will be dynamically inserted here -->
+                <tbody id="dataTableBody">
+                    <!-- Data will be dynamically inserted here -->
                 </tbody>
             </table>
         </div>
@@ -149,83 +120,52 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const promoterTable = document.getElementById('promoterTable');
-            const svTable = document.getElementById('svTable');
-            const toggleTableBtn = document.getElementById('toggleTableBtn');
-            const dateFilter = document.getElementById('dateFilter');
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
 
-            let isPromoterTableVisible = true;
+            const formattedToday = today.toISOString().slice(0, 10);
+            const formattedYesterday = yesterday.toISOString().slice(0, 10);
 
-            // Load Promoter Data by default
-            loadPromoterData();
+            let currentTable = 'promoter';
 
-            toggleTableBtn.addEventListener('click', function () {
-                if (isPromoterTableVisible) {
-                    loadSVData();
-                    promoterTable.style.display = 'none';
-                    svTable.style.display = 'table';
-                    toggleTableBtn.textContent = 'Switch to Promoter Data';
-                } else {
-                    loadPromoterData();
-                    promoterTable.style.display = 'table';
-                    svTable.style.display = 'none';
-                    toggleTableBtn.textContent = 'Switch to SV Data';
-                }
-                isPromoterTableVisible = !isPromoterTableVisible;
-            });
-
-            dateFilter.addEventListener('change', function () {
-                const selectedDate = dateFilter.value;
-                if (isPromoterTableVisible) {
-                    loadPromoterData(selectedDate);
-                } else {
-                    loadSVData(selectedDate);
-                }
-            });
-
-            function loadPromoterData(dateFilter = null) {
-                let url = '/get-promoter-data';
-                if (dateFilter) {
-                    url += `?date=${dateFilter}`;
-                }
-
-                fetch(url)
+            function loadData(tableType) {
+                fetch(`/get-${tableType}-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
                     .then(response => response.json())
                     .then(data => {
-                        const tableBody = document.getElementById('promoterTableBody');
+                        const tableBody = document.getElementById('dataTableBody');
                         tableBody.innerHTML = '';
+                        const tableHeader = document.getElementById('tableHeader');
+                        
+                        if (tableType === 'promoter') {
+                            tableHeader.innerHTML = `
+                                <th>#</th>
+                                <th>Short Text</th>
+                                <th>Long Text</th>
+                                <th>Time</th>
+                                <th>Edit</th>
+                            `;
+                        } else {
+                            tableHeader.innerHTML = `
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Handle</th>
+                                <th>Role</th>
+                                <th>Age</th>
+                                <th>Time</th>
+                                <th>Edit</th>
+                            `;
+                        }
 
                         data.forEach((item, index) => {
                             const row = document.createElement('tr');
-                            row.innerHTML = `
+                            row.innerHTML = tableType === 'promoter' ? `
                                 <td>${index + 1}</td>
                                 <td contenteditable="false">${item.shortText}</td>
                                 <td contenteditable="false">${item.longText}</td>
                                 <td contenteditable="false">${item.timestamp}</td>
                                 <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
-                            `;
-                            tableBody.appendChild(row);
-                        });
-
-                        addEditListeners('promoter');
-                    });
-            }
-
-            function loadSVData(dateFilter = null) {
-                let url = '/get-sv-data';
-                if (dateFilter) {
-                    url += `?date=${dateFilter}`;
-                }
-
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        const tableBody = document.getElementById('svTableBody');
-                        tableBody.innerHTML = '';
-
-                        data.forEach((item, index) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
+                            ` : `
                                 <td>${index + 1}</td>
                                 <td contenteditable="false">${item.username}</td>
                                 <td contenteditable="false">${item.handle}</td>
@@ -237,60 +177,104 @@
                             tableBody.appendChild(row);
                         });
 
-                        addEditListeners('sv');
-                    });
-            }
+                        // Attach edit functionality
+                        document.querySelectorAll('.edit-btn').forEach(button => {
+                            button.addEventListener('click', function () {
+                                const row = this.closest('tr');
+                                const cells = row.querySelectorAll('td[contenteditable]');
+                                const isEditing = this.textContent === 'Save';
 
-            function addEditListeners(tableType) {
-                document.querySelectorAll('.edit-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const row = this.closest('tr');
-                        const cells = row.querySelectorAll('td[contenteditable]');
-                        const isEditing = this.textContent === 'Save';
+                                if (isEditing) {
+                                    // Save data
+                                    const updatedData = tableType === 'promoter' ? {
+                                        shortText: cells[0].textContent.trim(),
+                                        longText: cells[1].textContent.trim(),
+                                        timestamp: cells[2].textContent.trim()
+                                    } : {
+                                        username: cells[0].textContent.trim(),
+                                        handle: cells[1].textContent.trim(),
+                                        role: cells[2].textContent.trim(),
+                                        age: cells[3].textContent.trim(),
+                                        timestamp: cells[4].textContent.trim()
+                                    };
+                                    const id = this.getAttribute('data-id');
 
-                        if (isEditing) {
-                            const updatedData = {};
-                            cells.forEach((cell, index) => {
-                                if (tableType === 'promoter') {
-                                    if (index === 1) updatedData.shortText = cell.textContent.trim();
-                                    else if (index === 2) updatedData.longText = cell.textContent.trim();
-                                } else if (tableType === 'sv') {
-                                    if (index === 1) updatedData.username = cell.textContent.trim();
-                                    else if (index === 2) updatedData.handle = cell.textContent.trim();
-                                    else if (index === 3) updatedData.role = cell.textContent.trim();
-                                    else if (index === 4) updatedData.age = cell.textContent.trim();
-                                }
-                            });
-
-                            fetch(`/update-${tableType}-data/${button.dataset.id}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(updatedData)
-                            })
-                            .then(response => response.json())
-                            .then(result => {
-                                if (result.success) {
-                                    this.textContent = 'Edit';
-                                    cells.forEach(cell => {
-                                        cell.contentEditable = 'false';
+                                    fetch(`/update-${tableType}-data/${id}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(updatedData)
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Failed to update data');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(result => {
+                                        alert('Data updated successfully');
+                                        this.textContent = 'Edit';
+                                        cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+                                    })
+                                    .catch(error => {
+                                        alert('Data update failed');
+                                        console.error('Error:', error);
                                     });
                                 } else {
-                                    console.error('Error updating data');
+                                    // Enable editing
+                                    this.textContent = 'Save';
+                                    cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
                                 }
                             });
-                        } else {
-                            this.textContent = 'Save';
-                            cells.forEach(cell => {
-                                cell.contentEditable = 'true';
-                            });
-                        }
+                        });
                     });
-                });
             }
+
+            loadData(currentTable);
+
+            document.getElementById('toggleTableBtn').addEventListener('click', function () {
+                currentTable = currentTable === 'promoter' ? 'sv' : 'promoter';
+                this.textContent = currentTable === 'promoter' ? 'Show SV Data' : 'Show Promoter Data';
+                loadData(currentTable);
+            });
+
+            document.getElementById('calendarBtn').addEventListener('click', function () {
+                const dateFilter = document.getElementById('dateFilter');
+                dateFilter.style.display = 'inline-block';
+                dateFilter.addEventListener('change', function () {
+                    const selectedDate = new Date(dateFilter.value);
+                    const formattedDate = selectedDate.toISOString().slice(0, 10);
+
+                    fetch(`/get-${currentTable}-data?date=${formattedDate}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.getElementById('dataTableBody');
+                            tableBody.innerHTML = '';
+                            
+                            data.forEach((item, index) => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = currentTable === 'promoter' ? `
+                                    <td>${index + 1}</td>
+                                    <td contenteditable="false">${item.shortText}</td>
+                                    <td contenteditable="false">${item.longText}</td>
+                                    <td contenteditable="false">${item.timestamp}</td>
+                                    <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
+                                ` : `
+                                    <td>${index + 1}</td>
+                                    <td contenteditable="false">${item.username}</td>
+                                    <td contenteditable="false">${item.handle}</td>
+                                    <td contenteditable="false">${item.role}</td>
+                                    <td contenteditable="false">${item.age}</td>
+                                    <td contenteditable="false">${item.timestamp}</td>
+                                    <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
+                                `;
+                                tableBody.appendChild(row);
+                            });
+                        });
+                });
+            });
         });
     </script>
-
 </body>
 </html>
