@@ -189,13 +189,13 @@
                                     const updatedData = tableType === 'promoter' ? {
                                         shortText: cells[0].textContent.trim(),
                                         longText: cells[1].textContent.trim(),
-                                        timestamp: cells[2].textContent.trim()
+                                        timestamp: new Date().toISOString() // Set current time
                                     } : {
                                         username: cells[0].textContent.trim(),
                                         handle: cells[1].textContent.trim(),
                                         role: cells[2].textContent.trim(),
                                         age: cells[3].textContent.trim(),
-                                        timestamp: cells[4].textContent.trim()
+                                        timestamp: new Date().toISOString() // Set current time
                                     };
                                     const id = this.getAttribute('data-id');
 
@@ -208,18 +208,22 @@
                                     })
                                     .then(response => {
                                         if (!response.ok) {
-                                            throw new Error('Failed to update data');
+                                            throw new Error('Failed to update data ass');
                                         }
                                         return response.json();
                                     })
                                     .then(result => {
                                         alert('Data updated successfully');
                                         this.textContent = 'Edit';
+                                        cells[2].textContent = new Date(updatedData.timestamp).toLocaleString();
+
                                         cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
                                     })
                                     .catch(error => {
-                                        alert('Data update failed');
+                                        alert('Data update failed ass2');
                                         console.error('Error:', error);
+                                        cells[2].textContent = new Date(updatedData.timestamp).toLocaleString();
+
                                     });
                                 } else {
                                     // Enable editing
