@@ -4,20 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="img/icon.png" type="image/png">
-    <title>CEO</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <title>HR Data Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #121212;
             color: #ffffff;
             font-family: Arial, sans-serif;
         }
- 
+
         .logo-djizzakh {
-            padding-bottom: -10px;
             width: 25%;
             height: auto;
             position: relative;
@@ -26,6 +22,7 @@
         .container {
             text-align: center;
         }
+
         .btn-custom {
             width: 150px;
             margin: 10px;
@@ -36,21 +33,26 @@
             border-radius: 5px;
             color: white;
         }
+
         #dataTableContainer {
             margin-top: 20px;
         }
+
         table {
             width: calc(100% - 40px);
             margin: 20px auto;
             border-collapse: collapse;
         }
+
         th, td {
             padding: 12px;
             border: 1px solid #ffffff;
         }
+
         th {
             background-color: #343a40;
         }
+
         .calendar-btn {
             margin-left: 20px;
             margin-right: 30px;
@@ -60,11 +62,23 @@
             padding: 10px 20px;
             color: white;
         }
-        .no {
-            border: 0;
+
+        .edit-btn {
+            background-color: #f0ad4e;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            cursor: pointer;
         }
+
         .toggle-btn {
-            margin-bottom: 20px;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -81,53 +95,23 @@
     </div>
 
     <div class="container mt-5 pt-3">
-        <!-- Header -->
-        <h1 id="headerTitle">Get Data from MongoDB</h1>
+        <h1 id="headerTitle">HR Data Management</h1>
 
-        <!-- Toggle Button -->
-        <button class="btn btn-primary toggle-btn" id="toggleBtn">Show Promoter Data</button>
+        <button id="toggleTableBtn" class="toggle-btn mb-4">Show SV Data</button>
 
-        <!-- Table to display Promoter data -->
-        <div id="promoterDataTableContainer" class="container-fluid">
-            <button class="calendar-btn btn" id="promoterCalendarBtn">
+        <div id="dataTableContainer" class="container-fluid">
+            <button class="calendar-btn btn" id="calendarBtn">
                 <i class="fa fas-calendar">Filter by date</i>
             </button>
-            <input type="date" id="promoterDateFilter" style="display: none;" class="calendar-input">
+            <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
             
             <table class="table table-dark table-striped mb-5">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Short Text</th>
-                        <th>Long Text</th>
-                        <th>Time</th>
+                    <tr id="tableHeader">
+                        <!-- Headers will be dynamically inserted -->
                     </tr>
                 </thead>
-                <tbody id="promoterDataTableBody">
-                    <!-- Data will be dynamically inserted here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Table to display SV data -->
-        <div id="svDataTableContainer" class="container-fluid" style="display: none;">
-            <button class="calendar-btn btn" id="svCalendarBtn">
-                <i class="fa fas-calendar">Filter by date</i>
-            </button>
-            <input type="date" id="svDateFilter" style="display: none;" class="calendar-input">
-            
-            <table class="table table-dark table-striped mb-5">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Username</th>
-                        <th>Handle</th>
-                        <th>Role</th>
-                        <th>Age</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="svDataTableBody">
+                <tbody id="dataTableBody">
                     <!-- Data will be dynamically inserted here -->
                 </tbody>
             </table>
@@ -140,94 +124,158 @@
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1);
 
-            const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
-            const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
+            const formattedToday = today.toISOString().slice(0, 10);
+            const formattedYesterday = yesterday.toISOString().slice(0, 10);
 
-            function fetchPromoterData(start_date, end_date) {
-                fetch(`/get-promoter-data?start_date=${start_date}&end_date=${end_date}`)
+            let currentTable = 'promoter';
+
+            function loadData(tableType) {
+                fetch(`/get-${tableType}-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
                     .then(response => response.json())
                     .then(data => {
-                        const tableBody = document.getElementById('promoterDataTableBody');
+                        const tableBody = document.getElementById('dataTableBody');
                         tableBody.innerHTML = '';
+                        const tableHeader = document.getElementById('tableHeader');
+                        
+                        if (tableType === 'promoter') {
+                            tableHeader.innerHTML = `
+                                <th>#</th>
+                                <th>Short Text</th>
+                                <th>Long Text</th>
+                                <th>Time</th>
+                                <th>Edit</th>
+                            `;
+                        } else {
+                            tableHeader.innerHTML = `
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Handle</th>
+                                <th>Role</th>
+                                <th>Age</th>
+                                <th>Time</th>
+                                <th>Edit</th>
+                            `;
+                        }
 
                         data.forEach((item, index) => {
                             const row = document.createElement('tr');
-                            row.innerHTML = `
+                            row.innerHTML = tableType === 'promoter' ? `
                                 <td>${index + 1}</td>
-                                <td>${item.shortText}</td>
-                                <td>${item.longText}</td>
-                                <td>${item.timestamp}</td>
+                                <td contenteditable="false">${item.shortText}</td>
+                                <td contenteditable="false">${item.longText}</td>
+                                <td contenteditable="false">${item.timestamp}</td>
+                                <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
+                            ` : `
+                                <td>${index + 1}</td>
+                                <td contenteditable="false">${item.username}</td>
+                                <td contenteditable="false">${item.handle}</td>
+                                <td contenteditable="false">${item.role}</td>
+                                <td contenteditable="false">${item.age}</td>
+                                <td contenteditable="false">${item.timestamp}</td>
+                                <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
                             `;
                             tableBody.appendChild(row);
+                        });
+
+                        // Attach edit functionality
+                        document.querySelectorAll('.edit-btn').forEach(button => {
+                            button.addEventListener('click', function () {
+                                const row = this.closest('tr');
+                                const cells = row.querySelectorAll('td[contenteditable]');
+                                const isEditing = this.textContent === 'Save';
+
+                                if (isEditing) {
+                                    // Save data
+                                    const updatedData = tableType === 'promoter' ? {
+                                        shortText: cells[1].textContent.trim(),
+                                        longText: cells[2].textContent.trim(),
+                                        timestamp: new Date().toISOString() // Set current time
+                                    } : {
+                                        username: cells[1].textContent.trim(),
+                                        handle: cells[2].textContent.trim(),
+                                        role: cells[3].textContent.trim(),
+                                        age: cells[4].textContent.trim(),
+                                        timestamp: new Date().toISOString() // Set current time
+                                    };
+                                    const id = this.getAttribute('data-id');
+
+                                    fetch(`/update-${tableType}-data/${id}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(updatedData)
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Data update failed');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(result => {
+                                        alert('Data updated successfully');
+                                        this.textContent = 'Edit';
+                                        cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+                                        row.querySelector('td:nth-child(4)').textContent = new Date(updatedData.timestamp).toLocaleString();
+                                    })
+                                    .catch(error => {
+                                        alert('Error updating data');
+                                        console.error('Error:', error);
+                                    });
+                                } else {
+                                    // Enable editing
+                                    this.textContent = 'Save';
+                                    cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+                                }
+                            });
                         });
                     });
             }
 
-            function fetchSVData(start_date, end_date) {
-                fetch(`/get-sv-data?start_date=${start_date}&end_date=${end_date}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const tableBody = document.getElementById('svDataTableBody');
-                        tableBody.innerHTML = '';
+            loadData(currentTable);
 
-                        data.forEach((item, index) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${index + 1}</td>
-                                <td>${item.username}</td>
-                                <td>${item.handle}</td>
-                                <td>${item.role}</td>
-                                <td>${item.age}</td>
-                                <td>${item.timestamp}</td>
-                            `;
-                            tableBody.appendChild(row);
+            document.getElementById('toggleTableBtn').addEventListener('click', function () {
+                currentTable = currentTable === 'promoter' ? 'sv' : 'promoter';
+                this.textContent = currentTable === 'promoter' ? 'Show SV Data' : 'Show Promoter Data';
+                loadData(currentTable);
+            });
+
+            document.getElementById('calendarBtn').addEventListener('click', function () {
+                const dateFilter = document.getElementById('dateFilter');
+                dateFilter.style.display = 'inline-block';
+                dateFilter.addEventListener('change', function () {
+                    const selectedDate = new Date(dateFilter.value);
+                    const formattedDate = selectedDate.toISOString().slice(0, 10);
+
+                    fetch(`/get-${currentTable}-data?date=${formattedDate}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.getElementById('dataTableBody');
+                            tableBody.innerHTML = '';
+                            
+                            data.forEach((item, index) => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = currentTable === 'promoter' ? `
+                                    <td>${index + 1}</td>
+                                    <td contenteditable="false">${item.shortText}</td>
+                                    <td contenteditable="false">${item.longText}</td>
+                                    <td contenteditable="false">${item.timestamp}</td>
+                                    <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
+                                ` : `
+                                    <td>${index + 1}</td>
+                                    <td contenteditable="false">${item.username}</td>
+                                    <td contenteditable="false">${item.handle}</td>
+                                    <td contenteditable="false">${item.role}</td>
+                                    <td contenteditable="false">${item.age}</td>
+                                    <td contenteditable="false">${item.timestamp}</td>
+                                    <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
+                                `;
+                                tableBody.appendChild(row);
+                            });
                         });
-                    });
-            }
-
-            // Fetch initial promoter data
-            fetchPromoterData(formattedYesterday, formattedToday);
-
-            document.getElementById('promoterCalendarBtn').addEventListener('click', function () {
-        const dateFilter = document.getElementById('promoterDateFilter');
-        dateFilter.style.display = 'inline-block';
-        dateFilter.addEventListener('change', function () {
-            const selectedDate = new Date(dateFilter.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-            fetchPromoterData(formattedDate, formattedDate);
-        });
-    });
-
-            document.getElementById('svCalendarBtn').addEventListener('click', function () {
-        const dateFilter = document.getElementById('svDateFilter');
-        dateFilter.style.display = 'inline-block';
-        dateFilter.addEventListener('change', function () {
-            const selectedDate = new Date(dateFilter.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-            fetchSVData(formattedDate, formattedDate);
-        });
-    });
-
-            // Toggle between Promoter and SV data
-            document.getElementById('toggleBtn').addEventListener('click', function () {
-                const promoterTable = document.getElementById('promoterDataTableContainer');
-                const svTable = document.getElementById('svDataTableContainer');
-
-                if (promoterTable.style.display === 'none') {
-                    promoterTable.style.display = 'block';
-                    svTable.style.display = 'none';
-                    this.textContent = 'Show SV Data';
-                } else {
-                    promoterTable.style.display = 'none';
-                    svTable.style.display = 'block';
-                    this.textContent = 'Show Promoter Data';
-
-                    // Fetch SV data when toggled
-                    fetchSVData(formattedYesterday, formattedToday);
-                }
+                });
             });
         });
     </script>
-
 </body>
 </html>
