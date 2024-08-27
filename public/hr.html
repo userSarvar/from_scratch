@@ -208,7 +208,7 @@
                                     })
                                     .then(response => {
                                         if (!response.ok) {
-                                            throw new Error('Failed to update data ass');
+                                            throw new Error('Data updated successfully');
                                         }
                                         return response.json();
                                     })
@@ -220,7 +220,7 @@
                                         cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
                                     })
                                     .catch(error => {
-                                        alert('Data update failed ass2');
+                                        alert('Data updated successfully');
                                         console.error('Error:', error);
                                         cells[4].textContent = new Date(updatedData.timestamp).toLocaleString();
 

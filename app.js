@@ -99,7 +99,9 @@ app.put('/update-promoter-data/:id', async (req, res) => {
         shortText: req.body.shortText,
         longText: req.body.longText,
         timestamp: req.body.timestamp
-    };
+    }
+        // Add the current timestamp as 'editedTime'
+    updatedData.editedTime = new Date().toISOString();
 
     try {
         const result = await PromoterData.updateOne({ _id: id }, { $set: updatedData });
@@ -123,7 +125,9 @@ app.post('/submit-sv', async (req, res) => {
         handle,
         role,
         age,
-    });
+    })
+   
+    
 
     try {
         await newEntry.save();
@@ -169,7 +173,10 @@ app.put('/update-sv-data/:id', async (req, res) => {
         role: req.body.role,
         age: req.body.age,
         timestamp: req.body.timestamp
-    };
+        
+    }
+         // Add the current timestamp as 'editedTime'
+         updatedData.editedTime = new Date().toISOString();
 
     try {
         const result = await SVData.updateOne({ _id: id }, { $set: updatedData });
