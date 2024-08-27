@@ -215,14 +215,14 @@
                                     .then(result => {
                                         alert('Data updated successfully');
                                         this.textContent = 'Edit';
-                                        cells[2].textContent = new Date(updatedData.timestamp).toLocaleString();
+                                        cells[4].textContent = new Date(updatedData.timestamp).toLocaleString();
 
                                         cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
                                     })
                                     .catch(error => {
                                         alert('Data update failed ass2');
                                         console.error('Error:', error);
-                                        cells[2].textContent = new Date(updatedData.timestamp).toLocaleString();
+                                        cells[4].textContent = new Date(updatedData.timestamp).toLocaleString();
 
                                     });
                                 } else {
