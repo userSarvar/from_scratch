@@ -189,24 +189,24 @@
             fetchPromoterData(formattedYesterday, formattedToday);
 
             document.getElementById('promoterCalendarBtn').addEventListener('click', function () {
-                const dateFilter = document.getElementById('promoterDateFilter');
-                dateFilter.style.display = 'inline-block';
-                dateFilter.addEventListener('change', function () {
-                    const selectedDate = new Date(dateFilter.value);
-                    const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-                    fetchPromoterData(formattedDate, formattedDate);
-                });
-            });
+        const dateFilter = document.getElementById('promoterDateFilter');
+        dateFilter.style.display = 'inline-block';
+        dateFilter.addEventListener('change', function () {
+            const selectedDate = new Date(dateFilter.value);
+            const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
+            fetchPromoterData(formattedDate, formattedDate);
+        });
+    });
 
             document.getElementById('svCalendarBtn').addEventListener('click', function () {
-                const dateFilter = document.getElementById('svDateFilter');
-                dateFilter.style.display = 'inline-block';
-                dateFilter.addEventListener('change', function () {
-                    const selectedDate = new Date(dateFilter.value);
-                    const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-                    fetchSVData(formattedDate, formattedDate);
-                });
-            });
+        const dateFilter = document.getElementById('svDateFilter');
+        dateFilter.style.display = 'inline-block';
+        dateFilter.addEventListener('change', function () {
+            const selectedDate = new Date(dateFilter.value);
+            const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
+            fetchSVData(formattedDate, formattedDate);
+        });
+    });
 
             // Toggle between Promoter and SV data
             document.getElementById('toggleBtn').addEventListener('click', function () {
