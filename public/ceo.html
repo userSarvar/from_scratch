@@ -63,6 +63,9 @@
         .no {
             border: 0;
         }
+        .toggle-btn {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -81,12 +84,15 @@
         <!-- Header -->
         <h1 id="headerTitle">Get Data from MongoDB</h1>
 
-        <!-- Table to display data -->
-        <div id="dataTableContainer" class="container-fluid">
-            <button class="calendar-btn btn" id="calendarBtn">
+        <!-- Toggle Button -->
+        <button class="btn btn-primary toggle-btn" id="toggleBtn">Show Promoter Data</button>
+
+        <!-- Table to display Promoter data -->
+        <div id="promoterDataTableContainer" class="container-fluid">
+            <button class="calendar-btn btn" id="promoterCalendarBtn">
                 <i class="fa fas-calendar">Filter by date</i>
             </button>
-            <input type="date" id="dateFilter" style="display: none;" class="calendar-input">
+            <input type="date" id="promoterDateFilter" style="display: none;" class="calendar-input">
             
             <table class="table table-dark table-striped mb-5">
                 <thead>
@@ -97,7 +103,31 @@
                         <th>Time</th>
                     </tr>
                 </thead>
-                <tbody id="dataTableBody">
+                <tbody id="promoterDataTableBody">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table to display SV data -->
+        <div id="svDataTableContainer" class="container-fluid" style="display: none;">
+            <button class="calendar-btn btn" id="svCalendarBtn">
+                <i class="fa fas-calendar">Filter by date</i>
+            </button>
+            <input type="date" id="svDateFilter" style="display: none;" class="calendar-input">
+            
+            <table class="table table-dark table-striped mb-5">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Handle</th>
+                        <th>Role</th>
+                        <th>Age</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="svDataTableBody">
                     <!-- Data will be dynamically inserted here -->
                 </tbody>
             </table>
@@ -113,36 +143,11 @@
             const formattedToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
             const formattedYesterday = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
 
-            fetch(`/get-promoter-data?start_date=${formattedYesterday}&end_date=${formattedToday}`)
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.getElementById('dataTableBody');
-                    tableBody.innerHTML = '';
-
-                    data.forEach((item, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${item.shortText}</td>
-                            <td>${item.longText}</td>
-                            <td>${item.timestamp}</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                });
-        });
-
-        document.getElementById('calendarBtn').addEventListener('click', function () {
-            const dateFilter = document.getElementById('dateFilter');
-            dateFilter.style.display = 'inline-block';
-            dateFilter.addEventListener('change', function () {
-                const selectedDate = new Date(dateFilter.value);
-                const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
-
-                fetch(`/get-promoter-data?date=${formattedDate}`)
+            function fetchPromoterData(start_date, end_date) {
+                fetch(`/get-promoter-data?start_date=${start_date}&end_date=${end_date}`)
                     .then(response => response.json())
                     .then(data => {
-                        const tableBody = document.getElementById('dataTableBody');
+                        const tableBody = document.getElementById('promoterDataTableBody');
                         tableBody.innerHTML = '';
 
                         data.forEach((item, index) => {
@@ -156,6 +161,70 @@
                             tableBody.appendChild(row);
                         });
                     });
+            }
+
+            function fetchSVData(start_date, end_date) {
+                fetch(`/get-sv-data?start_date=${start_date}&end_date=${end_date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBody = document.getElementById('svDataTableBody');
+                        tableBody.innerHTML = '';
+
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${item.username}</td>
+                                <td>${item.handle}</td>
+                                <td>${item.role}</td>
+                                <td>${item.age}</td>
+                                <td>${item.timestamp}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    });
+            }
+
+            // Fetch initial promoter data
+            fetchPromoterData(formattedYesterday, formattedToday);
+
+            document.getElementById('promoterCalendarBtn').addEventListener('click', function () {
+                const dateFilter = document.getElementById('promoterDateFilter');
+                dateFilter.style.display = 'inline-block';
+                dateFilter.addEventListener('change', function () {
+                    const selectedDate = new Date(dateFilter.value);
+                    const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
+                    fetchPromoterData(formattedDate, formattedDate);
+                });
+            });
+
+            document.getElementById('svCalendarBtn').addEventListener('click', function () {
+                const dateFilter = document.getElementById('svDateFilter');
+                dateFilter.style.display = 'inline-block';
+                dateFilter.addEventListener('change', function () {
+                    const selectedDate = new Date(dateFilter.value);
+                    const formattedDate = selectedDate.toISOString().slice(0, 10); // YYYY-MM-DD
+                    fetchSVData(formattedDate, formattedDate);
+                });
+            });
+
+            // Toggle between Promoter and SV data
+            document.getElementById('toggleBtn').addEventListener('click', function () {
+                const promoterTable = document.getElementById('promoterDataTableContainer');
+                const svTable = document.getElementById('svDataTableContainer');
+
+                if (promoterTable.style.display === 'none') {
+                    promoterTable.style.display = 'block';
+                    svTable.style.display = 'none';
+                    this.textContent = 'Show SV Data';
+                } else {
+                    promoterTable.style.display = 'none';
+                    svTable.style.display = 'block';
+                    this.textContent = 'Show Promoter Data';
+
+                    // Fetch SV data when toggled
+                    fetchSVData(formattedYesterday, formattedToday);
+                }
             });
         });
     </script>
