@@ -98,10 +98,12 @@ app.put('/update-promoter-data/:id', async (req, res) => {
     const updatedData = {
         shortText: req.body.shortText,
         longText: req.body.longText,
-        timestamp: req.body.timestamp
-    }
+        timestamp: req.body.timestamp,
         // Add the current timestamp as 'editedTime'
-    updatedData.editedTime = new Date().toISOString();
+        editedTime : new Date().toISOString()
+    }
+
+   
 
     try {
         const result = await PromoterData.updateOne({ _id: id }, { $set: updatedData });
@@ -172,7 +174,9 @@ app.put('/update-sv-data/:id', async (req, res) => {
         handle: req.body.handle,
         role: req.body.role,
         age: req.body.age,
-        timestamp: req.body.timestamp
+        timestamp: req.body.timestamp,
+         // Add the current timestamp as 'editedTime'
+         editedTime : new Date().toISOString()
         
     }
          // Add the current timestamp as 'editedTime'
