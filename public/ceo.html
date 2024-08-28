@@ -143,7 +143,6 @@
                                 <th>Short Text</th>
                                 <th>Long Text</th>
                                 <th>Time</th>
-                                <th>Edit</th>
                             `;
                         } else {
                             tableHeader.innerHTML = `
@@ -153,7 +152,6 @@
                                 <th>Role</th>
                                 <th>Age</th>
                                 <th>Time</th>
-                                <th>Edit</th>
                             `;
                         }
 
@@ -164,7 +162,6 @@
                                 <td contenteditable="false">${item.shortText}</td>
                                 <td contenteditable="false">${item.longText}</td>
                                 <td contenteditable="false">${item.timestamp}</td>
-                                <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
                             ` : `
                                 <td>${index + 1}</td>
                                 <td contenteditable="false">${item.username}</td>
@@ -172,7 +169,6 @@
                                 <td contenteditable="false">${item.role}</td>
                                 <td contenteditable="false">${item.age}</td>
                                 <td contenteditable="false">${item.timestamp}</td>
-                                <td><button class="edit-btn" data-id="${item._id}">Edit</button></td>
                             `;
                             tableBody.appendChild(row);
                         });
