@@ -34,6 +34,8 @@ const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
     timestamp: { type: Date, default: Date.now },
+    editedTime: Date  // Add this line
+
 });
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
@@ -44,6 +46,8 @@ const svSchema = new mongoose.Schema({
     role: String,
     age: Number,
     timestamp: { type: Date, default: Date.now },
+    editedTime: Date  // Add this line
+
 });
 
 const SVData = mongoose.model('SVData', svSchema);
@@ -100,7 +104,7 @@ app.put('/update-promoter-data/:id', async (req, res) => {
         longText: req.body.longText,
         timestamp: req.body.timestamp,
         // Add the current timestamp as 'editedTime'
-        editedTime : new Date().toISOString()
+        editedTime: new Date()  // Update editedTime to current time
     }
 
    
@@ -176,7 +180,7 @@ app.put('/update-sv-data/:id', async (req, res) => {
         age: req.body.age,
         timestamp: req.body.timestamp,
          // Add the current timestamp as 'editedTime'
-         editedTime : new Date().toISOString()
+         editedTime: new Date()  // Update editedTime to current time
         
     }
          // Add the current timestamp as 'editedTime'
