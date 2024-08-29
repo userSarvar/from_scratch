@@ -48,7 +48,6 @@ app.post('/login', async (req, res) => {
     if (users[username]) {
         const match = await bcrypt.compare(password, users[username]);
         if (match) {
-            // Assign role based on username
             let role;
             switch (username) {
                 case 'ceopage':
@@ -65,6 +64,7 @@ app.post('/login', async (req, res) => {
 
     return res.status(401).json({ message: 'Invalid username or password' });
 });
+
 
 
 
