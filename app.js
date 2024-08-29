@@ -42,29 +42,18 @@ const users = {
 };
 
 // Login route
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    if (users[username]) {
-        const match = await bcrypt.compare(password, users[username]);
-        console.log(match)
-        if (match) {
-            let role;
-            switch (username) {
-                case 'ceopage':
-                    role = 'retailCoordinator';
-                    break;
-                case 'hrpage':
-                    role = 'hr';
-                    break;
-                // Add other cases
-            }
-            return res.redirect('/home.html'); // Redirect to home.html after successful login
-        }
+    if (username === 'ceopage' && password === 'ceoPassword2200') {
+        return res.status(200).json({ role: 'retailCoordinator' });
+    } else if (username === 'hrpage' && password === 'hrPassword2200') {
+        return res.status(200).json({ role: 'hr' });
     }
 
     return res.status(401).json({ message: 'Invalid username or password' });
 });
+
 
 // Define schemas and models
 const promoterSchema = new mongoose.Schema({
