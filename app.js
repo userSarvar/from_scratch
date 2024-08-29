@@ -34,18 +34,15 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
-const plainPassword = 'ceoPassword2200';
-const saltRounds = 10;
-const hash = await bcrypt.hash(plainPassword, saltRounds);
-console.log('New bcrypt hash:', hash);
+
 
 
 
 
 // Hashed passwords for users
 const users = {
-    ceopage: '$2b$10$uQ1pD/xfEY2Q7Z9qHlW9ieV74tgtREVsKwGzZtJS9B7u6y/RKhf9K', // bcrypt hash for ceoPassword2200
-    hrpage: '$2b$10$dW2lmtM6bFzF4p9Ghg1gRe67EbzU14iQjG3iYCeZqR.5OCEmvDbUK', // bcrypt hash for hrPassword2200
+    ceopage: '$2b$10$iZEmIGaSQIjAOC3SKLYRkez3f.YMqa96lre/wY67V2DO7IG0MeUpa', // bcrypt hash for ceoPassword2200
+    hrpage: '$2b$10$dprmXFZ/JZtrS.7I8Sc2Nul3VVuRPRNL/HZdSatLlBksf64BbvlJm', // bcrypt hash for hrPassword2200
     // Add other users similarly
 };
 
