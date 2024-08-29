@@ -9,18 +9,22 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+// Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
-
+// Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware to add Tashkent time to the request
 app.use((req, res, next) => {
     const tashkentTime = moment().tz('Asia/Tashkent').format();
     req.tashkentTime = tashkentTime;
     next();
 });
 
+// Connect to MongoDB Atlas
 mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mongodb.net/SamsungDjizzakh', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -30,11 +34,13 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
+
 const users = {
     ceopage: '$2b$10$uQ1pD/xfEY2Q7Z9qHlW9ieV74tgtREVsKwGzZtJS9B7u6y/RKhf9K', // bcrypt hash for ceoPassword2200
     hrpage: '$2b$10$dW2lmtM6bFzF4p9Ghg1gRe67EbzU14iQjG3iYCeZqR.5OCEmvDbUK', // bcrypt hash for hrPassword2200
     // Add other users similarly
 };
+
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -59,9 +65,41 @@ app.post('/login', async (req, res) => {
     return res.status(401).json({ message: 'Invalid username or password' });
 });
 
+
+
+
+
+// Define schemas and models
+const promoterSchema = new mongoose.Schema({
+    shortText: String,
+    longText: String,
+    timestamp: { type: Date, default: Date.now },
+    editedTime: Date  // Add this line
+
+});
+
+const PromoterData = mongoose.model('PromoterData', promoterSchema);
+
+const svSchema = new mongoose.Schema({
+    username: String,
+    handle: String,
+    role: String,
+    age: Number,
+    timestamp: { type: Date, default: Date.now },
+    editedTime: Date  // Add this line
+
+});
+
+const SVData = mongoose.model('SVData', svSchema);
+
+// Routes for promoter data
 app.post('/submit-promoter', async (req, res) => {
     const { shortText, longText } = req.body;
-    const newEntry = new PromoterData({ shortText, longText });
+
+    const newEntry = new PromoterData({
+        shortText,
+        longText,
+    });
 
     try {
         await newEntry.save();
@@ -86,6 +124,7 @@ app.get('/get-promoter-data', async (req, res) => {
         }
 
         const data = await PromoterData.find(query).exec();
+
         const formattedData = data.map(item => ({
             ...item.toObject(),
             timestamp: new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' })
@@ -103,8 +142,11 @@ app.put('/update-promoter-data/:id', async (req, res) => {
     const updatedData = {
         shortText: req.body.shortText,
         longText: req.body.longText,
+        // Add the current timestamp as 'editedTime'
         editedTime: new Date()  // Update editedTime to current time
     }
+
+   
 
     try {
         const result = await PromoterData.updateOne({ _id: id }, { $set: updatedData });
@@ -119,9 +161,18 @@ app.put('/update-promoter-data/:id', async (req, res) => {
     }
 });
 
+// Routes for SV data
 app.post('/submit-sv', async (req, res) => {
     const { username, handle, role, age } = req.body;
-    const newEntry = new SVData({ username, handle, role, age });
+
+    const newEntry = new SVData({
+        username,
+        handle,
+        role,
+        age,
+    })
+   
+    
 
     try {
         await newEntry.save();
@@ -146,6 +197,7 @@ app.get('/get-sv-data', async (req, res) => {
         }
 
         const data = await SVData.find(query).exec();
+
         const formattedData = data.map(item => ({
             ...item.toObject(),
             timestamp: new Date(item.timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tashkent' })
@@ -165,8 +217,12 @@ app.put('/update-sv-data/:id', async (req, res) => {
         handle: req.body.handle,
         role: req.body.role,
         age: req.body.age,
-        editedTime: new Date()  // Update editedTime to current time
+         // Add the current timestamp as 'editedTime'
+         editedTime: new Date()  // Update editedTime to current time
+        
     }
+         // Add the current timestamp as 'editedTime'
+         updatedData.editedTime = new Date().toISOString();
 
     try {
         const result = await SVData.updateOne({ _id: id }, { $set: updatedData });
@@ -181,6 +237,7 @@ app.put('/update-sv-data/:id', async (req, res) => {
     }
 });
 
+// Serve static files
 app.get('/promoter', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/promoter.html'));
 });
@@ -189,6 +246,7 @@ app.get('/sv', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/sv.html'));
 });
 
+// Set the port for the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
