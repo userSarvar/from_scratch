@@ -47,6 +47,7 @@ app.post('/login', async (req, res) => {
 
     if (users[username]) {
         const match = await bcrypt.compare(password, users[username]);
+        console.log(match)
         if (match) {
             let role;
             switch (username) {
