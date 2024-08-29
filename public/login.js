@@ -1,32 +1,26 @@
-document.getElementById('loginForm').addEventListener('submit', function (e) {
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    let role;
-    // Example login logic (this should be replaced with actual authentication)
-    if (username === 'ceopage' && password === 'ceoPassword2200') {
-        role = 'retailCoordinator';
-    } else if (username === 'hrpage' && password === 'hrPassword2200') {
-        role = 'hr';
-    } else if (username === 'rm' && password === 'password') {
-        role = 'regionalManager';
-    } else if (username === 'retailpage' && password === 'retailPassword2200') {
-        role = 'retailAnalytics';
-    } else if (username === 'sv' && password === 'svPassword2200') {
-        role = 'supervisor';
-    } else if (username === 'promoter' && password === 'promoterPassword2200') {
-        role = 'promoter';
-    
-    
-    } else {
-        alert('Invalid username or password');
-        return;
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('role', data.role);
+            window.location.href = 'home.html';
+        } else {
+            alert('Invalid username or password');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while logging in');
     }
-    
-    localStorage.setItem('role', role);
-    window.location.href = 'home.html';
 });
-
-
-
