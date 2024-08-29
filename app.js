@@ -65,6 +65,14 @@ app.post('/login', async (req, res) => {
                 case 'hrpage':
                     role = 'hr';
                     break;
+
+                case 'sv':
+                    role = 'supervisor';
+                    break;
+
+                case 'promoter':
+                    role = 'promoter';
+                    break;  
                 // Add other cases
             }
             console.log(`Login successful, role: ${role}`);
