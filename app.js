@@ -43,7 +43,7 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 const users = {
     ceopage: '$2b$10$iZEmIGaSQIjAOC3SKLYRkez3f.YMqa96lre/wY67V2DO7IG0MeUpa', // bcrypt hash for ceoPassword2200
     hrpage: '$2b$10$dprmXFZ/JZtrS.7I8Sc2Nul3VVuRPRNL/HZdSatLlBksf64BbvlJm', // bcrypt hash for hrPassword2200
-    sv: '$2b$10$YoLqRtCaV3L6d2ojNov2j.sIMi2v8lih1imSrx1ZTpfC7cw/5AVAK', // bcrypt hash for svPassword2200
+    sv: '$2b$10$rGvRHYIMYJeBkVyBL6kFSu1K1vjENqBSfdooxKmQAw.o4vk24Bd7m', // bcrypt hash for svPassword2200
     promoter : '$2b$10$WmsN0kkJOdMKZdqkPv79c.fGbU1xuF4tB4sv7/EqLEHNe8foudFyS',// bcrypt hash for promoterPassword2200
 };
 
