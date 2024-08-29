@@ -297,6 +297,32 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="login.js"></script>
+    <script >document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+    
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('role', data.role);
+                window.location.href = 'home.html';
+            } else {
+                alert('Invalid username or password');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while logging in');
+        }
+    });
+    </script>
 </body>
 </html>
