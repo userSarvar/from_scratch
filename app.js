@@ -9,11 +9,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 // Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
+
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -34,14 +34,14 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
     console.error('Error connecting to MongoDB Atlas:', error);
 });
 
-
+// Hashed passwords for users
 const users = {
     ceopage: '$2b$10$uQ1pD/xfEY2Q7Z9qHlW9ieV74tgtREVsKwGzZtJS9B7u6y/RKhf9K', // bcrypt hash for ceoPassword2200
     hrpage: '$2b$10$dW2lmtM6bFzF4p9Ghg1gRe67EbzU14iQjG3iYCeZqR.5OCEmvDbUK', // bcrypt hash for hrPassword2200
     // Add other users similarly
 };
 
-
+// Login route
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -58,24 +58,19 @@ app.post('/login', async (req, res) => {
                     break;
                 // Add other cases
             }
-            return res.status(200).json({ role });
+            return res.redirect('/home.html'); // Redirect to home.html after successful login
         }
     }
 
     return res.status(401).json({ message: 'Invalid username or password' });
 });
 
-
-
-
-
 // Define schemas and models
 const promoterSchema = new mongoose.Schema({
     shortText: String,
     longText: String,
     timestamp: { type: Date, default: Date.now },
-    editedTime: Date  // Add this line
-
+    editedTime: Date
 });
 
 const PromoterData = mongoose.model('PromoterData', promoterSchema);
@@ -86,8 +81,7 @@ const svSchema = new mongoose.Schema({
     role: String,
     age: Number,
     timestamp: { type: Date, default: Date.now },
-    editedTime: Date  // Add this line
-
+    editedTime: Date
 });
 
 const SVData = mongoose.model('SVData', svSchema);
@@ -142,11 +136,8 @@ app.put('/update-promoter-data/:id', async (req, res) => {
     const updatedData = {
         shortText: req.body.shortText,
         longText: req.body.longText,
-        // Add the current timestamp as 'editedTime'
-        editedTime: new Date()  // Update editedTime to current time
-    }
-
-   
+        editedTime: new Date() // Update editedTime to current time
+    };
 
     try {
         const result = await PromoterData.updateOne({ _id: id }, { $set: updatedData });
@@ -170,9 +161,7 @@ app.post('/submit-sv', async (req, res) => {
         handle,
         role,
         age,
-    })
-   
-    
+    });
 
     try {
         await newEntry.save();
@@ -217,12 +206,8 @@ app.put('/update-sv-data/:id', async (req, res) => {
         handle: req.body.handle,
         role: req.body.role,
         age: req.body.age,
-         // Add the current timestamp as 'editedTime'
-         editedTime: new Date()  // Update editedTime to current time
-        
-    }
-         // Add the current timestamp as 'editedTime'
-         updatedData.editedTime = new Date().toISOString();
+        editedTime: new Date() // Update editedTime to current time
+    };
 
     try {
         const result = await SVData.updateOne({ _id: id }, { $set: updatedData });
