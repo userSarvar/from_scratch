@@ -42,13 +42,32 @@ const users = {
 };
 
 // Login route
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log(`Login attempt with username: ${username}`);
 
-    if (username === 'ceopage' && password === 'ceoPassword2200') {
-        return res.status(200).json({ role: 'retailCoordinator' });
-    } else if (username === 'hrpage' && password === 'hrPassword2200') {
-        return res.status(200).json({ role: 'hr' });
+    if (users[username]) {
+        const match = await bcrypt.compare(password, users[username]);
+        console.log(`Password match result: ${match}`);
+
+        if (match) {
+            let role;
+            switch (username) {
+                case 'ceopage':
+                    role = 'retailCoordinator';
+                    break;
+                case 'hrpage':
+                    role = 'hr';
+                    break;
+                // Add other cases
+            }
+            console.log(`Login successful, role: ${role}`);
+            return res.status(200).json({ role });
+        } else {
+            console.log(`Password mismatch for username: ${username}`);
+        }
+    } else {
+        console.log(`Username not found: ${username}`);
     }
 
     return res.status(401).json({ message: 'Invalid username or password' });
