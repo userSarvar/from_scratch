@@ -2,13 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const moment = require('moment-timezone');
-
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 const app = express();
 
 // Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(bodyParser.json());
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -28,6 +29,41 @@ mongoose.connect('mongodb+srv://Samsunguser:0tddxGSOsHXadjLn@cluster0.w1z0c.mong
 }).catch((error) => {
     console.error('Error connecting to MongoDB Atlas:', error);
 });
+
+
+const users = {
+    ceopage: '$2b$10$uQ1pD/xfEY2Q7Z9qHlW9ieV74tgtREVsKwGzZtJS9B7u6y/RKhf9K', // bcrypt hash for ceoPassword2200
+    hrpage: '$2b$10$dW2lmtM6bFzF4p9Ghg1gRe67EbzU14iQjG3iYCeZqR.5OCEmvDbUK', // bcrypt hash for hrPassword2200
+    // Add other users similarly
+};
+
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (users[username]) {
+        const match = await bcrypt.compare(password, users[username]);
+        if (match) {
+            // Assign role based on username
+            let role;
+            switch (username) {
+                case 'ceopage':
+                    role = 'retailCoordinator';
+                    break;
+                case 'hrpage':
+                    role = 'hr';
+                    break;
+                // Add other cases
+            }
+            return res.status(200).json({ role });
+        }
+    }
+
+    return res.status(401).json({ message: 'Invalid username or password' });
+});
+
+
+
 
 // Define schemas and models
 const promoterSchema = new mongoose.Schema({
