@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const plainPassword = 'hrPassword2200';
+const plainPassword = 'promoterPassword2200';
 
 async function hashPassword() {
     try {
