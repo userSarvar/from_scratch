@@ -6,6 +6,10 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
 // Middleware to parse JSON and form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
