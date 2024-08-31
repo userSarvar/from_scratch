@@ -153,3 +153,19 @@ input[type="submit"]:active {
     }
 }
 /* login in end */
+
+.terms-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .terms-container input[type="checkbox"] {
+    margin-right: 8px; /* Adjust this value to control the spacing */
+  }
+  
+
+
+
+.foot1 {
+    font-size: 14px;
+}

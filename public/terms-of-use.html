@@ -1,0 +1,304 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/icon.png" type="image/png">
+    <title>Terms of Service</title>
+    <style>
+        :root {
+            --primary-color: #1877f2;
+            --text-color: #e4e6eb;
+            --background-color: #18191a;
+            --white: #242526;
+            --border-color: #3e4042;
+            --dark-bg: #18191a;
+            --dark-text: #e4e6eb;
+            --dark-border: #3e4042;
+            --dark-card: #242526;
+            --hover-bg: #3a3b3c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 24px;
+            color: var(--primary-color);
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+        }
+        .section {
+            background-color: var(--white);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        p, ul {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 14px;
+            color: #8a8d91;
+            background-color: var(--white);
+            border-top: 1px solid var(--border-color);
+        }
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            width: 400px;
+            padding-right: 20px;
+        }
+        .sidebar ol {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            color: var(--primary-color);
+            background-color: var(--hover-bg);
+        }
+        .content {
+            flex-grow: 1;
+            margin-left: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .highlight {
+            background-color: #3a3b3c;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        details {
+            margin-bottom: 10px;
+            background-color: var(--background-color);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        summary {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: var(--background-color);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        .terms-icon {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        details ol {
+            padding: 0;
+            margin: 0;
+        }
+        details ol li {
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+        details ol li:hover {
+            background-color: var(--hover-bg);
+            border-radius: 5px;
+        }
+        /* Scrollbar styles */
+        .sidebar::-webkit-scrollbar, .content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .sidebar::-webkit-scrollbar-track, .content::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+        .sidebar::-webkit-scrollbar-thumb, .content::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        /* New styles for improved layout */
+        .main-content {
+            display: flex;
+            width: 100%;
+        }
+        .sidebar {
+            width: 30%;
+            max-width: 400px;
+        }
+        .content {
+            width: 70%;
+            padding-left: 40px;
+        }
+        .section {
+            padding: 30px 40px;
+        }
+        details {
+            background-color: var(--white);
+            margin-bottom: 20px;
+        }
+        summary {
+            background-color: var(--white);
+            padding: 20px;
+            font-size: 18px;
+        }
+        details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+        }
+        details ol {
+            padding: 20px;
+        }
+        details ol li {
+            margin-bottom: 15px;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="main-container">
+            <div class="container">
+                <div class="main-content">
+                    <aside class="sidebar">
+                        <details open>
+                            <summary>
+                                <svg class="terms-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 12V22H4V2H14M20 12L14 6M20 12H15C14.4477 12 14 11.5523 14 11V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Terms of Service
+                            </summary>
+                            <ol>
+                                <li><a href="#intro">1. Introduction</a></li>
+                                <li><a href="#services">2. Our Services</a></li>
+                                <li><a href="#commitments">3. Your Commitments</a></li>
+                                <li><a href="#rights">4. Additional Rights We Retain</a></li>
+                                <li><a href="#liability">5. Limits on Liability</a></li>
+                                <li><a href="#disputes">6. Disputes</a></li>
+                                <li><a href="#updates">7. Updates to Terms</a></li>
+                                <li><a href="#termination">8. Account Termination</a></li>
+                                <li><a href="#other">9. Other Terms and Policies</a></li>
+                            </ol>
+                        </details>
+                    </aside>
+                    <main class="content">
+                        <h1>Terms of Service</h1>
+                        
+                        <div class="section" id="intro">
+                            <h2>1. Introduction</h2>
+                            <p>Welcome to Our Social Network. These Terms of Service ("Terms") govern your use of our products, features, apps, services, technologies, and software that we offer (the "Services"), except where we expressly state that separate terms (and not these) apply. These Terms form an agreement between you and Our Social Network, Inc.</p>
+                        </div>
+                        <div class="section" id="services">
+                            <h2>2. Our Services</h2>
+                            <p>Our mission is to give people the power to build community and bring the world closer together. To help advance this mission, we provide the Services described below to you:</p>
+                            <ul>
+                                <li><strong>Provide a personalized experience for you:</strong>We provide a tailored experience through our innovative products, services, and customer support. Whether you're looking to connect with the latest trends in tech or seeking expert guidance, we are here to ensure you have everything you need.</li>
+                                <li><strong>Connect you with people and organizations you care about:</strong> We help you find and connect with people, groups, businesses, organizations, and others that matter to you across the Our Social Network Products you use.</li>
+                            </ul>
+                        </div>
+                        <div class="section" id="commitments">
+                            <h2>3. Your Commitments to Our Social Network and Our Community</h2>
+                            <p>We provide these services to you and others to help advance our mission. In exchange, we need you to make the following commitments:</p>
+                            <ul>
+                                <li><strong>Who can use Our Social Network:</strong> When people stand behind their opinions and actions, our community is safer and more accountable. For this reason, you must:
+                                    <ul>
+                                        <li>Use the same name that you use in everyday life.</li>
+                                        <li>Provide accurate information about yourself.</li>
+                                        <li>Create only one account (your own) and use your timeline for personal purposes.</li>
+                                        <li>Not share your password, give access to your Our Social Network account to others, or transfer your account to anyone else (without our permission).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>What you can share and do on Our Social Network:</strong> We want people to use Our Social Network to express themselves and to share content that is important to them, but not at the expense of the safety and well-being of others or the integrity of our community.</li>
+                            </ul>
+                        </div>
+                        <div class="section" id="rights">
+                            <h2>4. Additional Rights We Retain</h2>
+                            <p>If you select a username or similar identifier for your account, we may change it if we believe it is appropriate or necessary (for example, if it infringes someone's intellectual property or impersonates another user).</p>
+                        </div>
+                        <div class="section" id="liability">
+                            <h2>5. Limits on Liability</h2>
+                            <p>We work hard to provide the best Services we can and to specify clear guidelines for everyone who uses them. Our Services, however, are provided "as is," and we make no guarantees that they always will be safe, secure, or error-free, or that they will function without disruptions, delays, or imperfections. To the extent permitted by law, we also DISCLAIM ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.</p>
+                        </div>
+                        <div class="section" id="disputes">
+                            <h2>6. Disputes</h2>
+                            <p>We try to provide clear rules so that we can limit or hopefully avoid disputes between you and us. If a dispute does arise, however, it's useful to know up front where it can be resolved and what laws will apply.</p>
+                            <p>If you are a consumer, the laws of the country in which you reside will apply to any claim, cause of action, or dispute you have against us that arises out of or relates to these Terms or the Our Social Network Products, and you may resolve your claim in any competent court in that country that has jurisdiction over the claim.</p>
+                        </div>
+                        <div class="section" id="updates">
+                            <h2>7. Updates to Terms</h2>
+                            <p>We work constantly to improve our services and develop new features to make our Services better for you and our community. As a result, we may need to update these Terms from time to time to accurately reflect our services and practices.</p>
+                        </div>
+                        <div class="section" id="termination">
+                            <h2>8. Account Termination or Changes to Services</h2>
+                            <p>We may terminate or suspend access to your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use the Services will immediately cease.</p>
+                        </div>
+                        <div class="section" id="other">
+                            <h2>9. Other Terms and Policies That May Apply to You</h2>
+                            <p>Our Services are diverse, so sometimes additional terms or product requirements may apply to your use of certain Services. If you use or access Our Social Network Products or Services, you agree to our other applicable terms, including our Privacy Policy and Community Standards.</p>
+                        </div>
+                    </main>
+                </div>
+            </div>
+            <div class="footer">
+                Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved. | <a href="privacy.html">Privacy and Policy</a> | 
+            </div>
+        </div>
+
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+    </html>
